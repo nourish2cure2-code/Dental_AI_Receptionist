@@ -1,0 +1,5 @@
+{  
+  "antigravity.ai.model": "gemini-3.1-pro",  
+  "antigravity.agent.enabled": true,  
+  "antigravity.agent.model": "gemini-3.1-pro"  
+}
