@@ -22,7 +22,7 @@ You need a way to receive 2FA SMS texts to sign up for Twilio/Vapi, and a way to
 1. **Purchase Domain:** Buy a $1.00 \- $2.00 promo domain (e.g., .xyz or .site) via Namecheap.  
 2. **Cloudflare Email Routing (Free):**  
    * Add your domain to a free Cloudflare account.  
-   * Go to "Email Routing" and create a custom address (e.g., hola@yourdomain.xyz).  
+   * Go to "Email Routing" and create a custom address (e.g., <hola@yourdomain.xyz>).  
    * Forward it to your personal Gmail.  
    * *Agent Action:* Have Gemini generate your professional outreach templates to send from this alias.
 

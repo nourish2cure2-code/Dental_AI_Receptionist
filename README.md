@@ -1,6 +1,6 @@
 # Dental AI Receptionist MX 🦷🤖
 
-A high-converting, deeply localized AI Receptionist designed specifically for premium dental clinics in Mexicali (Zona Médica) and Los Algodones ("Molar City"). 
+A high-converting, deeply localized AI Receptionist designed specifically for premium dental clinics in Mexicali (Zona Médica) and Los Algodones ("Molar City").
 
 This project provides the system prompts, data schemas, webhook logic, and strategic workflows to deploy an AI agent capable of handling inbound inquiries from US and Canadian tourists seeking affordable dental care across the border.
 
@@ -15,6 +15,7 @@ This project provides the system prompts, data schemas, webhook logic, and strat
 ## 🛠️ Technology Stack (Bootstrapped)
 
 This project is built to operate on a highly efficient, minimal-budget stack:
+
 - **Vapi.ai**: Core voice AI conversational engine (using Cartesia voices and Deepgram transcriber).
 - **Twilio**: Local Mexican (+52 686) phone numbers routed via webhooks.
 - **n8n**: Webhook extraction and appointment routing.
