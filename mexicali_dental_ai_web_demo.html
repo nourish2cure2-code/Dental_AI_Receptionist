@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mexicali Dental AI | Live Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .blob {
+            box-shadow: 0 0 0 0 rgba(13, 148, 136, 1);
+            transform: scale(1);
+            animation: pulse-teal 2s infinite;
+        }
+
+        @keyframes pulse-teal {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 20px rgba(13, 148, 136, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(13, 148, 136, 0);
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+
+    <div
+        class="max-w-md w-full bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col h-[600px]">
+
+        <div class="bg-slate-900 text-white p-8 text-center rounded-b-[2rem] shadow-sm z-10">
+            <h1 class="text-2xl font-bold tracking-tight mb-2">Dental AI Receptionist</h1>
+            <p class="text-slate-400 text-sm">Zona Médica Inbound Prototype</p>
+        </div>
+
+        <div class="flex-grow flex flex-col items-center justify-center p-8 relative">
+
+            <!-- Voice Visualizer Ring (Hidden by default) -->
+            <div id="visualizer"
+                class="w-32 h-32 rounded-full bg-teal-50 flex items-center justify-center mb-8 transition-all duration-500 hidden">
+                <div id="inner-orb" class="w-24 h-24 rounded-full bg-teal-600 transition-all duration-300"></div>
+            </div>
+
+            <!-- Static Idle Icon -->
+            <div id="idle-icon"
+                class="w-32 h-32 rounded-full bg-slate-50 flex items-center justify-center mb-8 border-4 border-slate-100 text-4xl text-slate-300">
+                🎙️
+            </div>
+
+            <h2 id="status-text" class="text-xl font-semibold text-slate-700 mb-1">System Idle</h2>
+            <p id="sub-status" class="text-sm text-slate-400 text-center">Ready to initiate live patient intake.</p>
+        </div>
+
+        <div class="p-8 pb-10 bg-slate-50 mt-auto border-t border-slate-100 flex flex-col items-center">
+            <button id="call-btn"
+                class="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-4 px-8 rounded-2xl shadow-lg transition-all duration-200 transform hover:-translate-y-1 active:translate-y-0 text-lg flex items-center justify-center gap-3">
+                <span id="btn-icon">📞</span>
+                <span id="btn-text">Start Live Demo</span>
+            </button>
+
+            <!-- Custom Error Message Box (Replaces alerts) -->
+            <div id="error-box"
+                class="mt-4 p-3 bg-red-100 border border-red-200 text-red-700 text-sm rounded-xl text-center hidden w-full">
+                Error message goes here.
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import Vapi from "https://esm.sh/@vapi-ai/web";
+
+        // =====================================================================
+        // ⚠️ BUILDER ACTION REQUIRED: COMPLETE YOUR KEYS HERE
+        // =====================================================================
+        const VAPI_PUBLIC_KEY = "43d6c707-ebbc-4760-a931-6501689b573d"; // <--- Add the rest of your Public Key here
+        const VAPI_ASSISTANT_ID = "01ff55d9-1977-4987-abcc-8ee8d4c2690f"; // <--- Add the rest of your Assistant ID here
+
+        let vapiInstance = null;
+        let isCallActive = false;
+
+        const callBtn = document.getElementById('call-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnIcon = document.getElementById('btn-icon');
+        const statusText = document.getElementById('status-text');
+        const subStatus = document.getElementById('sub-status');
+        const visualizer = document.getElementById('visualizer');
+        const innerOrb = document.getElementById('inner-orb');
+        const idleIcon = document.getElementById('idle-icon');
+        const errorBox = document.getElementById('error-box');
+
+        function showError(msg) {
+            errorBox.textContent = msg;
+            errorBox.classList.remove('hidden');
+            setTimeout(() => errorBox.classList.add('hidden'), 5000);
+        }
+
+        function setUIState(state) {
+            if (state === 'idle') {
+                statusText.textContent = "System Idle";
+                subStatus.textContent = "Ready to initiate live patient intake.";
+                callBtn.classList.replace('bg-rose-500', 'bg-teal-600');
+                callBtn.classList.replace('hover:bg-rose-600', 'hover:bg-teal-500');
+                btnText.textContent = "Start Live Demo";
+                btnIcon.textContent = "📞";
+                visualizer.classList.add('hidden');
+                innerOrb.classList.remove('blob');
+                idleIcon.classList.remove('hidden');
+                isCallActive = false;
+            } else if (state === 'connecting') {
+                statusText.textContent = "Connecting...";
+                subStatus.textContent = "Establishing low-latency secure link.";
+                btnText.textContent = "Cancel";
+                idleIcon.classList.add('hidden');
+                visualizer.classList.remove('hidden');
+            } else if (state === 'active') {
+                statusText.textContent = "AI is Listening";
+                subStatus.textContent = "Speak naturally into the microphone.";
+                callBtn.classList.replace('bg-teal-600', 'bg-rose-500');
+                callBtn.classList.replace('hover:bg-teal-500', 'hover:bg-rose-600');
+                btnText.textContent = "End Call";
+                btnIcon.textContent = "🛑";
+                isCallActive = true;
+            }
+        }
+
+        async function startCall() {
+            try {
+                if (!vapiInstance) {
+                    vapiInstance = new Vapi(VAPI_PUBLIC_KEY);
+
+                    // Wire up events
+                    vapiInstance.on('call-start', () => {
+                        setUIState('active');
+                    });
+
+                    vapiInstance.on('call-end', () => {
+                        setUIState('idle');
+                    });
+
+                    vapiInstance.on('speech-start', () => {
+                        statusText.textContent = "AI is Speaking";
+                        subStatus.textContent = "Processing response...";
+                        innerOrb.classList.add('blob'); // Start pulsing
+                    });
+
+                    vapiInstance.on('speech-end', () => {
+                        statusText.textContent = "AI is Listening";
+                        subStatus.textContent = "Speak naturally into the microphone.";
+                        innerOrb.classList.remove('blob'); // Stop pulsing
+                    });
+
+                    vapiInstance.on('error', (e) => {
+                        console.error("Vapi Error:", e);
+                        showError("Connection error. Please check your keys or mic permissions.");
+                        setUIState('idle');
+                    });
+                }
+
+                setUIState('connecting');
+                // Request microphone permissions explicitly before starting
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                await vapiInstance.start(VAPI_ASSISTANT_ID);
+
+            } catch (err) {
+                console.error("Mic/Setup Error:", err);
+                showError("Microphone access denied. Please allow permissions in your browser.");
+                setUIState('idle');
+            }
+        }
+
+        callBtn.addEventListener('click', () => {
+            if (isCallActive) {
+                vapiInstance.stop();
+                setUIState('idle');
+            } else {
+                // Ensure keys are actually put in
+                if (VAPI_PUBLIC_KEY.length < 10) {
+                    showError("Please enter your full Vapi Public Key in the HTML code.");
+                    return;
+                }
+                startCall();
+            }
+        });
+    </script>
+</body>
+
+</html>
