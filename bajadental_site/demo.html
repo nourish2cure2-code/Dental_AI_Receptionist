@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Demo — Baja Dental AI</title>
+    <title>Demo en Vivo — Baja Dental AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
@@ -61,13 +61,20 @@
             <div class="w-[3px] h-7 bg-[#00B0FF]"></div>
             <span class="text-[#FAFAFA] font-black text-sm tracking-tight">BAJA DENTAL AI</span>
         </div>
-        <a href="index.html"
-           class="text-[#FAFAFA] opacity-30 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity flex items-center gap-2">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-width="2.5" d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Back to Site
-        </a>
+        <div class="flex items-center gap-5">
+            <!-- Language toggle -->
+            <div class="flex items-center border border-[#FAFAFA] border-opacity-20" role="group" aria-label="Language">
+                <button type="button" data-lang="es" class="lang-btn px-2.5 py-1 text-[10px] font-black uppercase tracking-widest transition-colors bg-[#00B0FF] text-[#0F0F0F]">ES</button>
+                <button type="button" data-lang="en" class="lang-btn px-2.5 py-1 text-[10px] font-black uppercase tracking-widest transition-colors text-[#FAFAFA] opacity-40 border-l border-[#FAFAFA] border-opacity-20">EN</button>
+            </div>
+            <a href="index.html"
+               class="text-[#FAFAFA] opacity-30 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity flex items-center gap-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="square" stroke-width="2.5" d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span data-i18n="nav_back">Volver al Sitio</span>
+            </a>
+        </div>
     </nav>
 
     <!-- MAIN -->
@@ -76,8 +83,8 @@
         <!-- Label -->
         <div class="flex items-center gap-2 mb-8">
             <div class="w-6 h-px bg-[#00B0FF]"></div>
-            <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">
-                Live Voice Demo · Zona Médica, Mexicali
+            <span data-i18n="demo_label" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">
+                Demo de Voz en Vivo · Zona Médica, Mexicali
             </span>
             <div class="w-6 h-px bg-[#00B0FF]"></div>
         </div>
@@ -87,11 +94,11 @@
 
             <!-- Card header -->
             <div class="px-7 py-6 border-b border-[#FAFAFA] border-opacity-[0.07]">
-                <h1 class="text-[#FAFAFA] font-black text-xl uppercase tracking-tight leading-none mb-1">
-                    AI Receptionist
+                <h1 data-i18n="demo_title" class="text-[#FAFAFA] font-black text-xl uppercase tracking-tight leading-none mb-1">
+                    Recepcionista IA
                 </h1>
-                <p class="text-[#FAFAFA] opacity-30 text-xs uppercase tracking-wider">
-                    Zona Médica Inbound Prototype
+                <p data-i18n="demo_subtitle" class="text-[#FAFAFA] opacity-30 text-xs uppercase tracking-wider">
+                    Prototipo de Entrada · Zona Médica
                 </p>
             </div>
 
@@ -138,11 +145,11 @@
                 <!-- Status text -->
                 <div id="status-label"
                      class="text-[#00B0FF] text-[10px] font-black tracking-[0.35em] uppercase mb-1">
-                    System Idle
+                    Sistema en Reposo
                 </div>
                 <div id="status-sub"
                      class="text-[#FAFAFA] opacity-30 text-xs text-center leading-relaxed max-w-[220px]">
-                    Ready to initiate live patient intake.
+                    Listo para iniciar la recepción de pacientes en vivo.
                 </div>
 
                 <!-- Error box -->
@@ -164,7 +171,7 @@
                                  1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1
                                  1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                     </svg>
-                    <span id="btn-label">Start Live Demo</span>
+                    <span id="btn-label">Iniciar Demo en Vivo</span>
                     <svg id="btn-icon-stop" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6 6h12v12H6z"/>
                     </svg>
@@ -175,27 +182,27 @@
 
         <!-- Prompt chips -->
         <div class="mt-8 flex flex-wrap gap-2 justify-center max-w-sm">
-            <span class="border border-[#FAFAFA] border-opacity-10 text-[#FAFAFA] opacity-30
+            <span data-i18n="chip1" class="border border-[#FAFAFA] border-opacity-10 text-[#FAFAFA] opacity-30
                          text-[10px] px-3 py-1.5 uppercase tracking-wider">
-                "Hi, I'm interested in implants"
+                «Hola, me interesan los implantes»
             </span>
-            <span class="border border-[#FAFAFA] border-opacity-10 text-[#FAFAFA] opacity-30
+            <span data-i18n="chip2" class="border border-[#FAFAFA] border-opacity-10 text-[#FAFAFA] opacity-30
                          text-[10px] px-3 py-1.5 uppercase tracking-wider">
-                "Hola, quiero agendar una cita"
+                «Quiero agendar una cita»
             </span>
-            <span class="border border-[#FAFAFA] border-opacity-10 text-[#FAFAFA] opacity-30
+            <span data-i18n="chip3" class="border border-[#FAFAFA] border-opacity-10 text-[#FAFAFA] opacity-30
                          text-[10px] px-3 py-1.5 uppercase tracking-wider">
-                "How far are you from the border?"
+                «¿Qué tan lejos están de la frontera?»
             </span>
         </div>
 
         <!-- CTA to pilot -->
         <div class="mt-10 text-center">
-            <p class="text-[#FAFAFA] opacity-20 text-xs mb-3">Ready to deploy this for your clinic?</p>
-            <a href="index.html#pilot"
+            <p data-i18n="demo_cta_q" class="text-[#FAFAFA] opacity-20 text-xs mb-3">¿Listo para implementarlo en tu clínica?</p>
+            <a href="index.html#pilot" data-i18n="demo_cta_btn"
                class="bg-[#00B0FF] text-[#0F0F0F] font-black text-xs uppercase tracking-widest
                       px-8 py-3 hover:bg-[#FAFAFA] transition-colors inline-block">
-                Get Started — $500 Pilot
+                Empieza — Piloto de $500
             </a>
         </div>
 
@@ -206,14 +213,103 @@
         <span class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
             Baja Dental AI · bajadentalai.com
         </span>
-        <span class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
-            LFPDPPP Compliant
+        <span data-i18n="footer_compliance" class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
+            Conforme a la LFPDPPP
         </span>
     </footer>
 
     <script type="module">
         import Vapi from "https://esm.sh/@vapi-ai/web";
 
+        /* ---------------- i18n ---------------- */
+        const I18N = {
+            es: {
+                doc_title: `Demo en Vivo — Baja Dental AI`,
+                nav_back: `Volver al Sitio`,
+                demo_label: `Demo de Voz en Vivo · Zona Médica, Mexicali`,
+                demo_title: `Recepcionista IA`,
+                demo_subtitle: `Prototipo de Entrada · Zona Médica`,
+                chip1: `«Hola, me interesan los implantes»`,
+                chip2: `«Quiero agendar una cita»`,
+                chip3: `«¿Qué tan lejos están de la frontera?»`,
+                demo_cta_q: `¿Listo para implementarlo en tu clínica?`,
+                demo_cta_btn: `Empieza — Piloto de $500`,
+                footer_compliance: `Conforme a la LFPDPPP`,
+                btn_start: `Iniciar Demo en Vivo`,
+                btn_connecting: `Conectando...`,
+                btn_end: `Finalizar Llamada`,
+                st_idle_label: `Sistema en Reposo`,
+                st_idle_sub: `Listo para iniciar la recepción de pacientes en vivo.`,
+                st_conn_label: `Conectando`,
+                st_conn_sub: `Estableciendo enlace seguro de baja latencia.`,
+                st_listen_label: `La IA está Escuchando`,
+                st_listen_sub: `Habla con naturalidad al micrófono.`,
+                st_speak_label: `La IA está Hablando`,
+                st_speak_sub: `Procesando respuesta...`,
+                err_conn: `Error de conexión. Revisa los permisos del micrófono e intenta de nuevo.`,
+                err_mic: `Acceso al micrófono denegado. Permítelo en la configuración de tu navegador.`,
+            },
+            en: {
+                doc_title: `Live Demo — Baja Dental AI`,
+                nav_back: `Back to Site`,
+                demo_label: `Live Voice Demo · Zona Médica, Mexicali`,
+                demo_title: `AI Receptionist`,
+                demo_subtitle: `Zona Médica Inbound Prototype`,
+                chip1: `"Hi, I'm interested in implants"`,
+                chip2: `"I'd like to book an appointment"`,
+                chip3: `"How far are you from the border?"`,
+                demo_cta_q: `Ready to deploy this for your clinic?`,
+                demo_cta_btn: `Get Started — $500 Pilot`,
+                footer_compliance: `LFPDPPP Compliant`,
+                btn_start: `Start Live Demo`,
+                btn_connecting: `Connecting...`,
+                btn_end: `End Call`,
+                st_idle_label: `System Idle`,
+                st_idle_sub: `Ready to initiate live patient intake.`,
+                st_conn_label: `Connecting`,
+                st_conn_sub: `Establishing secure low-latency link.`,
+                st_listen_label: `AI is Listening`,
+                st_listen_sub: `Speak naturally into the microphone.`,
+                st_speak_label: `AI is Speaking`,
+                st_speak_sub: `Processing response...`,
+                err_conn: `Connection error. Check mic permissions and try again.`,
+                err_mic: `Microphone access denied. Allow mic permissions in your browser settings.`,
+            }
+        };
+
+        const SUPPORTED = ['es', 'en'];
+        let currentLang = localStorage.getItem('bd_lang');
+        if (!SUPPORTED.includes(currentLang)) currentLang = 'es';
+        let lastState = 'idle';
+
+        const t = (k) => (I18N[currentLang] && I18N[currentLang][k]) || I18N.en[k] || '';
+
+        function applyStatic(lang) {
+            document.documentElement.lang = lang;
+            document.title = t('doc_title');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const v = t(el.getAttribute('data-i18n'));
+                if (v) el.textContent = v;
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const active = btn.getAttribute('data-lang') === lang;
+                btn.classList.toggle('bg-[#00B0FF]', active);
+                btn.classList.toggle('text-[#0F0F0F]', active);
+                btn.classList.toggle('text-[#FAFAFA]', !active);
+                btn.classList.toggle('opacity-40', !active);
+                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+        }
+
+        function setLang(lang) {
+            if (!SUPPORTED.includes(lang)) return;
+            currentLang = lang;
+            localStorage.setItem('bd_lang', lang);
+            applyStatic(lang);
+            setUI(lastState);
+        }
+
+        /* ---------------- Vapi ---------------- */
         const VAPI_PUBLIC_KEY   = "43d6c707-ebbc-4760-a931-6501689b573d";
         const VAPI_ASSISTANT_ID = "01ff55d9-1977-4987-abcc-8ee8d4c2690f";
 
@@ -239,6 +335,7 @@
         }
 
         function setUI(state) {
+            lastState = state;
             stateIdle.classList.add('hidden');
             stateConnecting.classList.add('hidden');
             stateActive.classList.add('hidden');
@@ -249,36 +346,39 @@
             if (state === 'idle') {
                 stateIdle.classList.remove('hidden');
                 micOrb.classList.add('ring-idle');
-                callBtn.classList.replace('bg-red-500', 'bg-[#00B0FF]');
-                callBtn.classList.add('bg-[#00B0FF]');
-                btnLabel.textContent = 'Start Live Demo';
+                callBtn.style.backgroundColor = '';
+                btnLabel.textContent = t('btn_start');
                 btnIconStart.classList.remove('hidden');
-                statusLabel.textContent = 'System Idle';
-                statusSub.textContent   = 'Ready to initiate live patient intake.';
+                statusLabel.textContent = t('st_idle_label');
+                statusSub.textContent   = t('st_idle_sub');
                 isCallActive = false;
 
             } else if (state === 'connecting') {
                 stateConnecting.classList.remove('hidden');
                 micOrb.classList.add('ring-idle');
-                btnLabel.textContent  = 'Connecting...';
-                statusLabel.textContent = 'Connecting';
-                statusSub.textContent   = 'Establishing secure low-latency link.';
+                btnLabel.textContent  = t('btn_connecting');
+                statusLabel.textContent = t('st_conn_label');
+                statusSub.textContent   = t('st_conn_sub');
 
             } else if (state === 'active') {
                 stateActive.classList.remove('hidden');
                 micOrb.classList.add('ring-active');
                 callBtn.style.backgroundColor = '#ef4444';
-                btnLabel.textContent  = 'End Call';
+                btnLabel.textContent  = t('btn_end');
                 btnIconStop.classList.remove('hidden');
-                statusLabel.textContent = 'AI is Listening';
-                statusSub.textContent   = 'Speak naturally into the microphone.';
+                statusLabel.textContent = t('st_listen_label');
+                statusSub.textContent   = t('st_listen_sub');
                 isCallActive = true;
 
             } else if (state === 'speaking') {
                 stateActive.classList.remove('hidden');
                 micOrb.classList.add('ring-active');
-                statusLabel.textContent = 'AI is Speaking';
-                statusSub.textContent   = 'Processing response...';
+                callBtn.style.backgroundColor = '#ef4444';
+                btnIconStop.classList.remove('hidden');
+                btnLabel.textContent  = t('btn_end');
+                statusLabel.textContent = t('st_speak_label');
+                statusSub.textContent   = t('st_speak_sub');
+                isCallActive = true;
             }
         }
 
@@ -287,14 +387,13 @@
                 if (!vapiInstance) {
                     vapiInstance = new Vapi(VAPI_PUBLIC_KEY);
                     vapiInstance.on('call-start',  () => setUI('active'));
-                    vapiInstance.on('call-end',    () => { setUI('idle'); callBtn.style.backgroundColor = ''; });
+                    vapiInstance.on('call-end',    () => setUI('idle'));
                     vapiInstance.on('speech-start', () => setUI('speaking'));
                     vapiInstance.on('speech-end',   () => setUI('active'));
                     vapiInstance.on('error', (e) => {
                         console.error('[Vapi]', e);
-                        showError('Connection error. Check mic permissions and try again.');
                         setUI('idle');
-                        callBtn.style.backgroundColor = '';
+                        showError(t('err_conn'));
                     });
                 }
                 setUI('connecting');
@@ -302,20 +401,28 @@
                 await vapiInstance.start(VAPI_ASSISTANT_ID);
             } catch (err) {
                 console.error('[Mic/Setup]', err);
-                showError('Microphone access denied. Allow mic permissions in your browser settings.');
                 setUI('idle');
+                showError(t('err_mic'));
             }
         }
+
+        /* ---------------- wire up ---------------- */
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang')));
+        });
 
         callBtn.addEventListener('click', () => {
             if (isCallActive) {
                 vapiInstance.stop();
-                callBtn.style.backgroundColor = '';
                 setUI('idle');
             } else {
                 startCall();
             }
         });
+
+        // init
+        applyStatic(currentLang);
+        setUI('idle');
     </script>
 </body>
 </html>

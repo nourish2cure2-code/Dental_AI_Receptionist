@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes http-server dist -p 8791 -c-1 -a 127.0.0.1)"
+    ]
+  }
+}

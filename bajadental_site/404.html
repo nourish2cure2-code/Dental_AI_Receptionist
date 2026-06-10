@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,10 +21,17 @@
             <div class="w-[3px] h-7 bg-[#00B0FF]"></div>
             <span class="text-[#FAFAFA] font-black text-sm tracking-tight">BAJA DENTAL AI</span>
         </a>
-        <a href="/"
-           class="text-[#FAFAFA] opacity-30 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity">
-            Home
-        </a>
+        <div class="flex items-center gap-5">
+            <!-- Language toggle -->
+            <div class="flex items-center border border-[#FAFAFA] border-opacity-20" role="group" aria-label="Language">
+                <button type="button" data-lang="es" class="lang-btn px-2.5 py-1 text-[10px] font-black uppercase tracking-widest transition-colors bg-[#00B0FF] text-[#0F0F0F]">ES</button>
+                <button type="button" data-lang="en" class="lang-btn px-2.5 py-1 text-[10px] font-black uppercase tracking-widest transition-colors text-[#FAFAFA] opacity-40 border-l border-[#FAFAFA] border-opacity-20">EN</button>
+            </div>
+            <a href="/" data-i18n="nav_home"
+               class="text-[#FAFAFA] opacity-30 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity">
+                Inicio
+            </a>
+        </div>
     </nav>
 
     <!-- MAIN -->
@@ -32,7 +39,7 @@
 
         <div class="flex items-center gap-2 mb-8">
             <div class="w-6 h-px bg-[#00B0FF]"></div>
-            <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Error 404 · Page Not Found</span>
+            <span data-i18n="eyebrow" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Error 404 · Página No Encontrada</span>
             <div class="w-6 h-px bg-[#00B0FF]"></div>
         </div>
 
@@ -40,19 +47,19 @@
             4<span class="text-[#00B0FF]">0</span>4
         </h1>
 
-        <p class="text-[#FAFAFA] opacity-40 text-base max-w-md leading-relaxed mb-12">
-            This line doesn't exist — but our AI receptionist answers every one that does.
-            Let's get you back on track.
+        <p data-i18n="body" class="text-[#FAFAFA] opacity-40 text-base max-w-md leading-relaxed mb-12">
+            Esta línea no existe — pero nuestra recepcionista IA contesta todas las que sí.
+            Te regresamos al camino.
         </p>
 
         <div class="flex flex-col sm:flex-row items-center gap-5">
-            <a href="/"
+            <a href="/" data-i18n="back_home"
                class="bg-[#00B0FF] text-[#0F0F0F] font-black text-xs uppercase tracking-widest px-8 py-4 hover:bg-[#FAFAFA] transition-colors">
-                Back to Home
+                Volver al Inicio
             </a>
             <a href="/demo"
                class="text-[#FAFAFA] opacity-40 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity flex items-center gap-2 border-b border-transparent hover:border-[#00B0FF] pb-1">
-                Try the live demo
+                <span data-i18n="demo_link">Prueba el demo en vivo</span>
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="square" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -65,10 +72,68 @@
         <span class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
             Baja Dental AI · bajadentalai.com
         </span>
-        <span class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
-            LFPDPPP Compliant
+        <span data-i18n="footer_compliance" class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
+            Conforme a la LFPDPPP
         </span>
     </footer>
 
+    <script>
+        const I18N = {
+            es: {
+                doc_title: `404 — Baja Dental AI`,
+                nav_home: `Inicio`,
+                eyebrow: `Error 404 · Página No Encontrada`,
+                body: `Esta línea no existe — pero nuestra recepcionista IA contesta todas las que sí. Te regresamos al camino.`,
+                back_home: `Volver al Inicio`,
+                demo_link: `Prueba el demo en vivo`,
+                footer_compliance: `Conforme a la LFPDPPP`,
+            },
+            en: {
+                doc_title: `404 — Baja Dental AI`,
+                nav_home: `Home`,
+                eyebrow: `Error 404 · Page Not Found`,
+                body: `This line doesn't exist — but our AI receptionist answers every one that does. Let's get you back on track.`,
+                back_home: `Back to Home`,
+                demo_link: `Try the live demo`,
+                footer_compliance: `LFPDPPP Compliant`,
+            }
+        };
+
+        const SUPPORTED = ['es', 'en'];
+        let currentLang = localStorage.getItem('bd_lang');
+        if (!SUPPORTED.includes(currentLang)) currentLang = 'es';
+
+        const t = (k) => (I18N[currentLang] && I18N[currentLang][k]) || I18N.en[k] || '';
+
+        function applyStatic(lang) {
+            document.documentElement.lang = lang;
+            document.title = t('doc_title');
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const v = t(el.getAttribute('data-i18n'));
+                if (v) el.textContent = v;
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const active = btn.getAttribute('data-lang') === lang;
+                btn.classList.toggle('bg-[#00B0FF]', active);
+                btn.classList.toggle('text-[#0F0F0F]', active);
+                btn.classList.toggle('text-[#FAFAFA]', !active);
+                btn.classList.toggle('opacity-40', !active);
+                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+        }
+
+        function setLang(lang) {
+            if (!SUPPORTED.includes(lang)) return;
+            currentLang = lang;
+            localStorage.setItem('bd_lang', lang);
+            applyStatic(lang);
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang')));
+        });
+
+        applyStatic(currentLang);
+    </script>
 </body>
 </html>
