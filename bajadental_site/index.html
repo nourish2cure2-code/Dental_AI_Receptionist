@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baja Dental AI — Automated Patient Acquisition for Premium Dental Practices</title>
+    <meta name="description" content="Zero missed patient leads. Automated clinical triage. Spanglish AI receptionist built for Mexicali's Zona Médica dental corridor.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    borderRadius: { DEFAULT: '0', none: '0' }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            font-family: 'Inter', sans-serif;
+            border-radius: 0 !important;
+        }
+
+        @keyframes pulse-cyan {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0,176,255,0.55); }
+            60%       { box-shadow: 0 0 0 16px rgba(0,176,255,0); }
+        }
+        .vapi-pulse { animation: pulse-cyan 2.2s ease-in-out infinite; }
+
+        @keyframes mic-wave {
+            0%, 100% { transform: scaleY(0.4); }
+            50%       { transform: scaleY(1); }
+        }
+        .bar { display: inline-block; width: 3px; background: #0F0F0F; transform-origin: bottom; }
+        .bar-1 { animation: mic-wave 0.8s ease-in-out infinite 0.0s; }
+        .bar-2 { animation: mic-wave 0.8s ease-in-out infinite 0.15s; }
+        .bar-3 { animation: mic-wave 0.8s ease-in-out infinite 0.30s; }
+        .bar-4 { animation: mic-wave 0.8s ease-in-out infinite 0.15s; }
+        .bar-5 { animation: mic-wave 0.8s ease-in-out infinite 0.0s; }
+        .waveform { display: none; align-items: flex-end; gap: 3px; height: 18px; }
+        .waveform.active { display: inline-flex; }
+
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body class="bg-[#FAFAFA] text-[#0F0F0F] antialiased">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════════════════════ -->
+<nav class="bg-[#0F0F0F] sticky top-0 z-50 border-b border-[#00B0FF] border-opacity-20">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+            <div class="w-[3px] h-7 bg-[#00B0FF]"></div>
+            <span class="text-[#FAFAFA] font-black text-sm tracking-tight">BAJA DENTAL AI</span>
+            <span class="hidden sm:block text-[#FAFAFA] opacity-20 text-xs font-light ml-1">
+                / AI Receptionist Infrastructure
+            </span>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="demo.html"
+               class="text-[#FAFAFA] opacity-40 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity">
+                Demo
+            </a>
+            <a href="#pilot"
+               class="bg-[#00B0FF] text-[#0F0F0F] font-black text-xs px-5 py-2.5 hover:bg-[#FAFAFA] transition-colors tracking-wider uppercase">
+                Get Started
+            </a>
+        </div>
+    </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="bg-[#0F0F0F] relative overflow-hidden min-h-[95vh] flex flex-col justify-center">
+
+    <!-- Structural grid overlay -->
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-0 right-0 w-px h-full bg-[#00B0FF] opacity-[0.07]" style="left:33%"></div>
+        <div class="absolute top-0 right-0 w-px h-full bg-[#00B0FF] opacity-[0.05]" style="left:66%"></div>
+        <div class="absolute left-0 right-0 h-px bg-[#00B0FF] opacity-[0.07]" style="top:40%"></div>
+        <div class="absolute top-0 right-0 w-80 h-80 border border-[#00B0FF] opacity-[0.08]"
+             style="transform:translate(40%,-40%)"></div>
+        <div class="absolute bottom-0 left-0 w-56 h-56 border border-[#00B0FF] opacity-[0.05]"
+             style="transform:translate(-40%,40%)"></div>
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-28 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+
+            <!-- LEFT: Copy -->
+            <div class="lg:col-span-7">
+                <div class="flex items-center gap-2 mb-7">
+                    <div class="w-6 h-px bg-[#00B0FF]"></div>
+                    <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">
+                        Enterprise Voice AI · Zona Médica, Mexicali B.C.
+                    </span>
+                </div>
+
+                <h1 class="text-[#FAFAFA] font-black leading-none tracking-tight mb-6">
+                    <span class="block text-5xl md:text-6xl lg:text-7xl">ZERO MISSED</span>
+                    <span class="block text-5xl md:text-6xl lg:text-7xl text-[#00B0FF]">PATIENT LEADS.</span>
+                    <span class="block text-4xl md:text-5xl lg:text-6xl mt-2 opacity-60">EVER.</span>
+                </h1>
+
+                <p class="text-[#FAFAFA] opacity-60 text-base md:text-lg font-light leading-relaxed max-w-lg mb-3">
+                    Your AI receptionist intercepts every inbound call — in English or Spanish — qualifies the
+                    procedure, extracts contact data, and routes the lead to your CRM before the patient
+                    even hangs up.
+                </p>
+                <p class="text-[#00B0FF] font-semibold text-sm mb-10">
+                    Sub-800ms response &nbsp;·&nbsp; 24/7/365 uptime &nbsp;·&nbsp; LFPDPPP compliant
+                </p>
+
+                <!-- CTA GROUP -->
+                <div class="flex flex-col sm:flex-row gap-4">
+
+                    <!-- PRIMARY: Vapi trigger -->
+                    <button
+                        id="vapi-demo-trigger"
+                        class="vapi-pulse group relative flex items-center justify-center gap-4
+                               bg-[#00B0FF] text-[#0F0F0F] font-black text-sm uppercase tracking-widest
+                               px-8 py-5 hover:bg-[#FAFAFA] transition-colors w-full sm:w-auto">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9
+                                     4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3
+                                     5.1S6.7 15 6.7 12H5c0 3.41 2.72 6.23 6 6.72V21h2v-2.28
+                                     c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                        </svg>
+                        <span>Activate Live Demo</span>
+                        <span id="vapi-waveform" class="waveform bar-1 bar-2 bar-3 bar-4 bar-5">
+                            <span class="bar bar-1 h-4"></span>
+                            <span class="bar bar-2 h-4"></span>
+                            <span class="bar bar-3 h-4"></span>
+                            <span class="bar bar-4 h-4"></span>
+                            <span class="bar bar-5 h-4"></span>
+                        </span>
+                    </button>
+
+                    <!-- SECONDARY: /demo.html -->
+                    <a href="demo.html"
+                       class="flex items-center justify-center gap-3 border border-[#FAFAFA] border-opacity-20
+                              text-[#FAFAFA] font-bold text-sm uppercase tracking-widest px-8 py-5
+                              hover:border-[#00B0FF] hover:text-[#00B0FF] transition-colors w-full sm:w-auto">
+                        Clinic Walk-In Demo
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="square" stroke-width="2.5" d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <p class="text-[#FAFAFA] opacity-20 text-[10px] mt-4 uppercase tracking-widest">
+                    Browser mic required · No account needed
+                </p>
+            </div>
+
+            <!-- RIGHT: Live metric panel -->
+            <div class="lg:col-span-5 hidden lg:block">
+                <div class="border border-[#FAFAFA] border-opacity-10">
+                    <!-- Panel header -->
+                    <div class="flex items-center justify-between px-5 py-3 border-b border-[#FAFAFA] border-opacity-10">
+                        <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.35em] uppercase">
+                            System Status
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-1.5 h-1.5 bg-[#00B0FF] animate-pulse"></div>
+                            <span class="text-[#00B0FF] text-[10px] font-bold uppercase tracking-wider">Live</span>
+                        </div>
+                    </div>
+                    <!-- Metrics -->
+                    <div class="divide-y divide-[#FAFAFA] divide-opacity-[0.06]">
+                        <div class="flex items-center justify-between px-5 py-4">
+                            <span class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Response Latency</span>
+                            <span class="text-[#FAFAFA] font-black text-lg tabular-nums">&lt; 800 <span class="text-xs font-normal opacity-40">ms</span></span>
+                        </div>
+                        <div class="flex items-center justify-between px-5 py-4">
+                            <span class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Call Capture Rate</span>
+                            <span class="text-[#FAFAFA] font-black text-lg tabular-nums">100 <span class="text-xs font-normal opacity-40">%</span></span>
+                        </div>
+                        <div class="flex items-center justify-between px-5 py-4">
+                            <span class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Monthly Cost</span>
+                            <span class="text-[#00B0FF] font-black text-lg tabular-nums">$0 <span class="text-xs font-normal opacity-40">USD</span></span>
+                        </div>
+                        <div class="flex items-center justify-between px-5 py-4">
+                            <span class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Languages</span>
+                            <span class="text-[#FAFAFA] font-black text-sm">EN &nbsp;<span class="text-[#00B0FF]">/</span>&nbsp; ES</span>
+                        </div>
+                        <div class="flex items-center justify-between px-5 py-4">
+                            <span class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Uptime SLA</span>
+                            <span class="text-[#FAFAFA] font-black text-lg tabular-nums">24/7 <span class="text-xs font-normal opacity-40">/ 365</span></span>
+                        </div>
+                        <div class="flex items-center justify-between px-5 py-4">
+                            <span class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Compliance</span>
+                            <span class="text-[#FAFAFA] font-black text-xs tracking-wide">LFPDPPP ✓</span>
+                        </div>
+                    </div>
+                    <!-- Panel footer -->
+                    <div class="px-5 py-3 bg-[#00B0FF] bg-opacity-[0.07] border-t border-[#00B0FF] border-opacity-20">
+                        <p class="text-[#00B0FF] text-[10px] font-bold uppercase tracking-widest text-center">
+                            All-on-4 · Veneers · Implants · Full Arch Restoration
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FRICTION LEDGER
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="bg-[#FAFAFA] py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+
+        <!-- Section label -->
+        <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-px bg-[#00B0FF]"></div>
+            <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Friction Ledger</span>
+        </div>
+        <h2 class="text-[#0F0F0F] font-black text-4xl md:text-5xl leading-none mb-2">
+            THE REAL COST OF<br>
+            <span class="text-[#00B0FF]">TRADITIONAL RECEPTION</span>
+        </h2>
+        <p class="text-[#0F0F0F] opacity-40 text-sm max-w-lg mb-12">
+            Every friction point below is a patient lead your clinic lost to a competitor who picked up.
+            This is the baseline you are operating from today.
+        </p>
+
+        <!-- ── TABLE ─────────────────────────────────────────────────────── -->
+        <div class="w-full overflow-x-auto">
+            <table class="w-full border-collapse text-sm">
+
+                <!-- Column headers -->
+                <thead>
+                    <tr>
+                        <th class="bg-[#0F0F0F] text-left px-6 py-4 text-[#FAFAFA] opacity-40
+                                   text-[10px] font-black uppercase tracking-[0.35em] w-1/3">
+                            Friction Point
+                        </th>
+                        <th class="bg-[#0F0F0F] text-left px-6 py-4 border-l border-[#FAFAFA] border-opacity-10">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-red-500"></div>
+                                <span class="text-[#FAFAFA] text-[10px] font-black uppercase tracking-[0.35em]">
+                                    Traditional Reception
+                                </span>
+                            </div>
+                        </th>
+                        <th class="bg-[#0F0F0F] text-left px-6 py-4 border-l border-[#FAFAFA] border-opacity-10">
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-[#00B0FF]"></div>
+                                <span class="text-[#00B0FF] text-[10px] font-black uppercase tracking-[0.35em]">
+                                    Baja Dental AI
+                                </span>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <!-- Row 1 -->
+                    <tr class="border-b border-[#0F0F0F] border-opacity-[0.08] hover:bg-[#0F0F0F] hover:bg-opacity-[0.02] transition-colors">
+                        <td class="px-6 py-5 font-black text-[#0F0F0F] text-xs uppercase tracking-wide align-top">
+                            Setup &amp; Onboarding
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">4–6 weeks recruitment cycle</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Job post → interviews → onboarding → training. Clinic exposed during gap.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06] bg-[#00B0FF] bg-opacity-[0.03]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-[#00B0FF] mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">Live within 72 hours</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        SIP routing configured, Spanglish persona trained, CRM webhook active.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Row 2 -->
+                    <tr class="border-b border-[#0F0F0F] border-opacity-[0.08] hover:bg-[#0F0F0F] hover:bg-opacity-[0.02] transition-colors">
+                        <td class="px-6 py-5 font-black text-[#0F0F0F] text-xs uppercase tracking-wide align-top">
+                            Monthly Overhead
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">$2,800 – $4,500 USD/month</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Salary + IMSS benefits + vacation + sick leave + turnover risk.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06] bg-[#00B0FF] bg-opacity-[0.03]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-[#00B0FF] mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">$0 USD/month after setup</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        No seat fees. No benefits. No turnover. One-time deployment cost.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Row 3 -->
+                    <tr class="border-b border-[#0F0F0F] border-opacity-[0.08] hover:bg-[#0F0F0F] hover:bg-opacity-[0.02] transition-colors">
+                        <td class="px-6 py-5 font-black text-[#0F0F0F] text-xs uppercase tracking-wide align-top">
+                            Availability Hours
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">~40 hrs/week (business hours only)</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        U.S. patients call after 6 PM PST. After-hours calls go unanswered.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06] bg-[#00B0FF] bg-opacity-[0.03]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-[#00B0FF] mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">8,760 hrs/year (24/7/365)</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Every call answered. Every lead captured. Zero coverage gaps.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Row 4 -->
+                    <tr class="border-b border-[#0F0F0F] border-opacity-[0.08] hover:bg-[#0F0F0F] hover:bg-opacity-[0.02] transition-colors">
+                        <td class="px-6 py-5 font-black text-[#0F0F0F] text-xs uppercase tracking-wide align-top">
+                            Bilingual Triage
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">Inconsistent — depends on staff</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Calexico and Yuma patients lost if English fluency is limited.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06] bg-[#00B0FF] bg-opacity-[0.03]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-[#00B0FF] mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">Native-grade EN ↔ ES mid-sentence</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Engineered for Spanglish code-switching. Captures every cross-border lead.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Row 5 -->
+                    <tr class="border-b border-[#0F0F0F] border-opacity-[0.08] hover:bg-[#0F0F0F] hover:bg-opacity-[0.02] transition-colors">
+                        <td class="px-6 py-5 font-black text-[#0F0F0F] text-xs uppercase tracking-wide align-top">
+                            Lead Data Capture
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">Manual notes — incomplete &amp; delayed</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Procedure interest lost in translation. CRM entry done hours later (if at all).
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06] bg-[#00B0FF] bg-opacity-[0.03]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-[#00B0FF] mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">Structured extraction in real-time</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        <code class="text-[#00B0FF] text-[10px]">patient_name</code> ·&nbsp;
+                                        <code class="text-[#00B0FF] text-[10px]">procedure_interest</code> ·&nbsp;
+                                        <code class="text-[#00B0FF] text-[10px]">phone</code>
+                                        injected to CRM via webhook on call end.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Row 6 -->
+                    <tr class="hover:bg-[#0F0F0F] hover:bg-opacity-[0.02] transition-colors">
+                        <td class="px-6 py-5 font-black text-[#0F0F0F] text-xs uppercase tracking-wide align-top">
+                            Privacy Compliance
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">Ad hoc — audit risk</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Verbal consent not recorded. LFPDPPP aviso de privacidad unverified.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 align-top border-l border-[#0F0F0F] border-opacity-[0.06] bg-[#00B0FF] bg-opacity-[0.03]">
+                            <div class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-[#00B0FF] mt-0.5 flex-shrink-0" fill="none"
+                                     stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="square" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <div class="font-bold text-[#0F0F0F]">LFPDPPP-compliant by design</div>
+                                    <div class="text-[#0F0F0F] opacity-40 text-xs mt-0.5">
+                                        Aviso de privacidad scripted into every call. Consent captured &amp; logged.
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ROI callout -->
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#0F0F0F]">
+            <div class="bg-[#0F0F0F] px-6 py-6 text-center">
+                <div class="text-[#00B0FF] font-black text-3xl mb-1">$3,000+</div>
+                <div class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Monthly savings vs. human staff</div>
+            </div>
+            <div class="bg-[#0F0F0F] px-6 py-6 text-center">
+                <div class="text-[#00B0FF] font-black text-3xl mb-1">100%</div>
+                <div class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Inbound call capture rate</div>
+            </div>
+            <div class="bg-[#0F0F0F] px-6 py-6 text-center">
+                <div class="text-[#00B0FF] font-black text-3xl mb-1">&lt; 72h</div>
+                <div class="text-[#FAFAFA] opacity-40 text-xs uppercase tracking-wider">Time to live deployment</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     LOGISTICS & AUTHORITY
+════════════════════════════════════════════════════════════════════════════ -->
+<section class="bg-[#0F0F0F] py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+
+        <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-px bg-[#00B0FF]"></div>
+            <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Regional Intelligence</span>
+        </div>
+        <h2 class="text-[#FAFAFA] font-black text-4xl md:text-5xl leading-none mb-12">
+            BUILT FOR THE<br><span class="text-[#00B0FF]">BORDER CORRIDOR</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#FAFAFA] bg-opacity-10">
+            <div class="bg-[#0F0F0F] p-8">
+                <div class="w-10 h-10 border border-[#00B0FF] flex items-center justify-center mb-5">
+                    <svg class="w-5 h-5 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="square" stroke-width="2"
+                              d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="square" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-[#FAFAFA] font-black text-sm uppercase tracking-wide mb-3">Fast Pass Lane Logic</h3>
+                <p class="text-[#FAFAFA] opacity-40 text-xs leading-relaxed">
+                    SENTRI/Global Entry holders cross in under 3 minutes. The AI routes them to priority scheduling
+                    slots and confirms parking near the East Port of Entry — on first contact.
+                </p>
+            </div>
+            <div class="bg-[#0F0F0F] p-8">
+                <div class="w-10 h-10 border border-[#00B0FF] flex items-center justify-center mb-5">
+                    <svg class="w-5 h-5 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="square" stroke-width="2"
+                              d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
+                    </svg>
+                </div>
+                <h3 class="text-[#FAFAFA] font-black text-sm uppercase tracking-wide mb-3">Calexico Walking Distance</h3>
+                <p class="text-[#FAFAFA] opacity-40 text-xs leading-relaxed">
+                    The #1 question from first-time medical tourists: "How far is your clinic?" The AI responds with
+                    exact walking minutes from the Calexico East crossing — your conversion advantage.
+                </p>
+            </div>
+            <div class="bg-[#0F0F0F] p-8">
+                <div class="w-10 h-10 border border-[#00B0FF] flex items-center justify-center mb-5">
+                    <svg class="w-5 h-5 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="square" stroke-width="2"
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11
+                                 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1
+                                 M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-[#FAFAFA] font-black text-sm uppercase tracking-wide mb-3">USD High-Value Pricing</h3>
+                <p class="text-[#FAFAFA] opacity-40 text-xs leading-relaxed">
+                    All-on-4 implants: $12K USD in California → $3,800 in Mexicali. The AI quotes USD savings
+                    dynamically and routes warm All-on-4 leads to your treatment coordinator in real-time.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     CONVERSION — PILOT PROGRAM
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="pilot" class="bg-[#FAFAFA] py-24 px-6">
+    <div class="max-w-3xl mx-auto">
+
+        <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-px bg-[#00B0FF]"></div>
+            <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Limited Enrollment · Q3 2026</span>
+        </div>
+        <h2 class="text-[#0F0F0F] font-black text-4xl md:text-5xl leading-none mb-4">THE PILOT PROGRAM</h2>
+        <p class="text-[#0F0F0F] opacity-50 text-sm max-w-lg leading-relaxed mb-10">
+            Three Mexicali clinics. Fully configured AI receptionist — Spanglish voice, CRM integration,
+            LFPDPPP compliance. One-time setup deposit. Retainer begins 7 days after go-live.
+        </p>
+
+        <div class="bg-[#0F0F0F]">
+
+            <!-- Offer header -->
+            <div class="flex items-start justify-between px-8 py-8 border-b border-[#FAFAFA] border-opacity-10 flex-wrap gap-4">
+                <div>
+                    <div class="text-[#00B0FF] text-[10px] font-black tracking-[0.35em] uppercase mb-2">Setup Deposit</div>
+                    <div class="text-[#FAFAFA] font-black text-6xl leading-none">$500</div>
+                    <div class="text-[#FAFAFA] opacity-30 text-xs mt-1.5 uppercase tracking-wider">USD · One-time · No subscription</div>
+                </div>
+                <div class="flex items-center gap-2 border border-[#00B0FF] border-opacity-40 bg-[#00B0FF] bg-opacity-10 px-4 py-2.5 self-start mt-2">
+                    <div class="w-1.5 h-1.5 bg-[#00B0FF] animate-pulse"></div>
+                    <span class="text-[#00B0FF] text-[10px] font-black tracking-[0.3em] uppercase">2 Slots Remaining</span>
+                </div>
+            </div>
+
+            <!-- Line items -->
+            <ul class="px-8 py-6 space-y-3 border-b border-[#FAFAFA] border-opacity-10">
+                <li class="flex items-center gap-3 text-xs text-[#FAFAFA] opacity-70">
+                    <div class="w-px h-3.5 bg-[#00B0FF] flex-shrink-0"></div>
+                    Custom Spanglish AI persona trained on your procedures &amp; USD pricing
+                </li>
+                <li class="flex items-center gap-3 text-xs text-[#FAFAFA] opacity-70">
+                    <div class="w-px h-3.5 bg-[#00B0FF] flex-shrink-0"></div>
+                    CRM webhook integration — patient_name, procedure_interest, contact number
+                </li>
+                <li class="flex items-center gap-3 text-xs text-[#FAFAFA] opacity-70">
+                    <div class="w-px h-3.5 bg-[#00B0FF] flex-shrink-0"></div>
+                    LFPDPPP-compliant aviso de privacidad scripted into every call
+                </li>
+                <li class="flex items-center gap-3 text-xs text-[#FAFAFA] opacity-70">
+                    <div class="w-px h-3.5 bg-[#00B0FF] flex-shrink-0"></div>
+                    SIP / Twilio telephony routing on your existing clinic phone number
+                </li>
+                <li class="flex items-center gap-3 text-xs text-[#FAFAFA] opacity-70">
+                    <div class="w-px h-3.5 bg-[#00B0FF] flex-shrink-0"></div>
+                    30-day managed onboarding + voice tuning + daily lead delivery reports
+                </li>
+                <li class="flex items-center gap-3 text-xs text-[#FAFAFA] opacity-70">
+                    <div class="w-px h-3.5 bg-[#00B0FF] flex-shrink-0"></div>
+                    Border logistics knowledge base (Fast Pass, Calexico walking times, USD comparisons)
+                </li>
+            </ul>
+
+            <!-- CTA -->
+            <div class="px-8 py-8">
+                <a href="invoice.html"
+                   class="block w-full bg-[#00B0FF] text-[#0F0F0F] font-black text-sm uppercase
+                          tracking-widest py-6 text-center hover:bg-[#FAFAFA] transition-colors">
+                    Secure Your Pilot Slot — $500 USD
+                    <span class="block text-[10px] font-normal opacity-50 mt-1 normal-case tracking-normal">
+                        View invoice &amp; payment options — Zelle · Cash · SPEI
+                    </span>
+                </a>
+                <div class="flex items-center justify-center gap-6 mt-5">
+                    <a href="invoice.html"
+                       class="text-[#FAFAFA] opacity-30 hover:opacity-70 text-[10px] font-bold uppercase tracking-widest transition-opacity">
+                        View Invoice →
+                    </a>
+                    <a href="demo.html"
+                       class="text-[#FAFAFA] opacity-30 hover:opacity-70 text-[10px] font-bold uppercase tracking-widest transition-opacity">
+                        Try Demo First →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════════════════════ -->
+<footer class="bg-[#0F0F0F] border-t border-[#FAFAFA] border-opacity-[0.06]">
+    <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start justify-between gap-6">
+        <div>
+            <div class="flex items-center gap-2.5 mb-2">
+                <div class="w-[3px] h-7 bg-[#00B0FF]"></div>
+                <span class="text-[#FAFAFA] font-black text-sm tracking-tight">BAJA DENTAL AI</span>
+            </div>
+            <p class="text-[#FAFAFA] opacity-25 text-xs ml-[18px]">
+                AI receptionist infrastructure for Mexicali's Zona Médica.
+            </p>
+            <p class="text-[#FAFAFA] opacity-15 text-xs ml-[18px] mt-0.5">bajadentalai.com</p>
+        </div>
+        <div class="text-[#FAFAFA] opacity-20 text-[10px] sm:text-right space-y-0.5">
+            <p>LFPDPPP compliant · Datos personales protegidos</p>
+            <p>Mexicali, Baja California, México</p>
+            <p class="mt-2">© 2026 Baja Dental AI. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VAPI MODAL + SDK
+════════════════════════════════════════════════════════════════════════════ -->
+<div id="vapi-modal"
+     class="hidden fixed inset-0 bg-[#0F0F0F] bg-opacity-90 z-50 flex items-center justify-center p-4">
+    <div class="bg-[#0F0F0F] border border-[#00B0FF] border-opacity-30 w-full max-w-sm p-8 text-center relative">
+
+        <button id="vapi-modal-close"
+                class="absolute top-4 right-4 text-[#FAFAFA] opacity-30 hover:opacity-100 transition-opacity">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="square" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+
+        <div id="vapi-mic-icon"
+             class="w-20 h-20 border-2 border-[#00B0FF] flex items-center justify-center mx-auto mb-6">
+            <svg class="w-9 h-9 text-[#00B0FF]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66
+                         1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.41
+                         2.72 6.23 6 6.72V21h2v-2.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+            </svg>
+        </div>
+
+        <div id="vapi-modal-status"
+             class="text-[#00B0FF] text-[10px] font-black tracking-[0.35em] uppercase mb-2">
+            Initializing...
+        </div>
+        <h3 class="text-[#FAFAFA] font-black text-lg uppercase tracking-tight mb-2">AI Receptionist</h3>
+        <p class="text-[#FAFAFA] opacity-40 text-xs mb-6 leading-relaxed">
+            Say <em>"Hi, I'm interested in implants"</em><br>or <em>"Hola, quiero agendar una cita."</em>
+        </p>
+
+        <button id="vapi-end-call"
+                class="hidden w-full border border-red-500 text-red-500 font-black text-xs
+                       uppercase tracking-widest py-3 hover:bg-red-500 hover:text-white transition-colors mb-2">
+            End Call
+        </button>
+
+        <p class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
+            Microphone access required
+        </p>
+    </div>
+</div>
+
+<script>
+(function () {
+    const trigger   = document.getElementById('vapi-demo-trigger');
+    const modal     = document.getElementById('vapi-modal');
+    const closeBtn  = document.getElementById('vapi-modal-close');
+    const statusEl  = document.getElementById('vapi-modal-status');
+    const micIcon   = document.getElementById('vapi-mic-icon');
+    const endBtn    = document.getElementById('vapi-end-call');
+    const waveform  = document.getElementById('vapi-waveform');
+
+    let vapi = null, sdkReady = false;
+
+    function loadSDK(cb) {
+        if (sdkReady) { cb(); return; }
+        const s  = document.createElement('script');
+        s.src    = 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/dist/index.js';
+        s.onload = () => { sdkReady = true; cb(); };
+        s.onerror = () => { statusEl.textContent = 'SDK load failed'; };
+        document.head.appendChild(s);
+    }
+
+    function stopCall() {
+        if (vapi) { try { vapi.stop(); } catch (e) {} }
+    }
+
+    function closeModal() {
+        stopCall();
+        modal.classList.add('hidden');
+        micIcon.classList.remove('mic-active-border');
+        endBtn.classList.add('hidden');
+        if (waveform) waveform.classList.remove('active');
+        statusEl.textContent = 'Initializing...';
+    }
+
+    trigger.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        statusEl.textContent = 'Loading SDK...';
+
+        loadSDK(() => {
+            statusEl.textContent = 'Connecting...';
+            try {
+                const PUBLIC_KEY   = 'YOUR_VAPI_PUBLIC_KEY';
+                const ASSISTANT_ID = 'YOUR_VAPI_ASSISTANT_ID';
+
+                vapi = new window.Vapi(PUBLIC_KEY);
+
+                vapi.on('call-start', () => {
+                    statusEl.textContent = 'LIVE — Listening';
+                    micIcon.style.borderColor = '#00B0FF';
+                    endBtn.classList.remove('hidden');
+                    if (waveform) waveform.classList.add('active');
+                });
+
+                vapi.on('call-end', () => {
+                    statusEl.textContent = 'Call ended';
+                    endBtn.classList.add('hidden');
+                    if (waveform) waveform.classList.remove('active');
+                });
+
+                vapi.on('error', (e) => {
+                    statusEl.textContent = 'Connection error';
+                    console.error('[Vapi]', e);
+                });
+
+                vapi.start(ASSISTANT_ID);
+            } catch (e) {
+                statusEl.textContent = 'Set VAPI keys to enable';
+            }
+        });
+    });
+
+    endBtn.addEventListener('click', stopCall);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+})();
+</script>
+
+</body>
+</html>
