@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "properties": {
+    "patient_name": {
+      "type": "string",
+      "description": "First and last name of the caller. If not provided, output 'Unknown'."
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Callback number formatted with country code (e.g. +17605551234). Caller ID is captured automatically; confirm only if they give a different callback number."
+    },
+    "procedure_interest": {
+      "type": "string",
+      "enum": ["all_on_4", "veneers", "implants", "full_mouth_restoration", "whitening", "unknown"],
+      "description": "The primary dental procedure the patient is interested in."
+    },
+    "urgency_timeline": {
+      "type": "string",
+      "enum": ["asap", "within_30_days", "within_6_months", "just_browsing"],
+      "description": "How soon the patient wants to have the procedure done."
+    },
+    "financial_status": {
+      "type": "string",
+      "enum": ["cash_ready", "needs_financing", "price_shopping", "unknown"],
+      "description": "The patient's stated budget expectation and payment method."
+    },
+    "border_crossing_anxiety": {
+      "type": "boolean",
+      "description": "True if the patient expresses concern or asks questions about safety or border wait times in Mexicali/Tijuana, so a human can address those concerns honestly (e.g. explain the VIP shuttle service)."
+    },
+    "travel_origin": {
+      "type": "string",
+      "description": "The city or state the patient is traveling from (e.g. 'San Diego', 'Arizona')."
+    },
+    "pain_points": {
+      "type": "string",
+      "description": "A 1-2 sentence summary, in the patient's own words where possible, of what is motivating them (e.g. discomfort with their current smile, difficulty eating). Do NOT diagnose or interpret symptoms; record only what the patient stated."
+    },
+    "emergency_flag": {
+      "type": "boolean",
+      "description": "Set to true if the caller reports acute symptoms — pain, bleeding, swelling, or signs of infection. This caller needs a human medical handoff, NOT a sales follow-up. Required by clinic safety policy."
+    },
+    "competitors_mentioned": {
+      "type": "string",
+      "description": "Names of other clinics or quotes the patient mentioned (e.g. 'My US dentist quoted me $30k', 'Sani Dental')."
+    },
+    "language_spoken": {
+      "type": "string",
+      "enum": ["english", "spanish", "spanglish"],
+      "description": "The primary language used during the call."
+    }
+  },
+  "required": [
+    "patient_name",
+    "procedure_interest",
+    "urgency_timeline",
+    "financial_status",
+    "border_crossing_anxiety",
+    "emergency_flag"
+  ]
+}

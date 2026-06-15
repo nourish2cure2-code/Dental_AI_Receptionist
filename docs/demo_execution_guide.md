@@ -12,13 +12,13 @@ This document outlines the step-by-step execution plan to build, configure, and 
      "antigravity.agent.model": "gemini-3.1-pro"  
    }
    ```
-2. **Symlink Agent Skills**: Ensure all `.claude/skills` are correctly symlinked to `.agents/skills` to guarantee access to the 4 core skills: `vapi-spanglish-persona`, `build-vapi-web-demo`, `n8n-webhook-extraction`, and `twilio-vapi-bridge`.
+2. **Symlink Agent Skills**: Ensure all `.claude/skills` are correctly symlinked to `.agents/skills` to guarantee access to the 2 core skills: `vapi-spanglish-persona` and `build-vapi-web-demo`.
 
 ## 2. Infrastructure & Telephony Bootstrapping
 
 1. **Bypass 2FA**: Utilize Skype or Google Voice desktop to acquire a VoIP number for receiving SMS verification during account creation.
 2. **Domain & Routing**: Purchase a promo domain via Namecheap. Configure Cloudflare Email Routing to forward a professional alias (e.g., `hola@yourdomain.xyz`) to your personal Gmail.
-3. **Twilio Provisioning**: Create a Twilio account and purchase a local Mexican +52 686 (Mexicali) number.
+3. **Telnyx Provisioning**: Create a Telnyx account and provision a phone number routed to your Vapi assistant.
 4. **Vapi Initialization**: Create a Vapi.ai account to utilize the free $10 tier.
 
 ## 3. Vapi Agent Architecture & Persona Configuration
@@ -50,27 +50,26 @@ This document outlines the step-by-step execution plan to build, configure, and 
      }
      ```
 
-## 4. Twilio to Vapi Bridging
+## 4. Telnyx to Vapi Bridging
 
-1. **Invoke `twilio-vapi-bridge` Skill**: Route the +52 Twilio number directly to Vapi without complex SIP trunks.
+1. **Bind the Telnyx number to Vapi**: Route the Telnyx number to Vapi via a BYO SIP trunk (see `vapi_config/telnyx_sip_setup.sh`).
    - **Target Endpoint**: `POST https://api.vapi.ai/phone-number`
    - **JSON Payload Structure**:
      ```json
      {
-       "provider": "twilio",
-       "number": "+52686XXXXXXX",
-       "twilioAccountSid": "<your_account_sid>",
-       "twilioAuthToken": "<your_auth_token>",
-       "assistantId": "<generated_assistant_id>"
+       "provider": "sip",
+       "number": "+1760XXXXXXX",
+       "assistantId": "<generated_assistant_id>",
+       "name": "Telnyx Primary MX Routing"
      }
      ```
-2. **Twilio Webhook**: Set the Twilio inbound webhook URL to point to the Vapi inbound SIP/Webhook handler.
+2. **Telnyx SIP Routing**: In the Telnyx portal, create a SIP Connection and point the number's inbound routing to `sip:<number>@sip.vapi.ai`.
 
-## 5. Webhook Extraction & n8n Routing
+## 5. Webhook Extraction (Supabase Edge Function)
 
-1. **Invoke `n8n-webhook-extraction` Skill**: Configure post-call extraction to route data to the clinic CRM.
-   - **Target Endpoint**: n8n Webhook URL.
-   - **JSON Payload Logic**: Map Vapi's structured outputs from `$json.message.artifact.structuredData`.
+1. **Deploy the `vapi-webhook` Edge Function**: Configure post-call extraction to write structured data straight to Supabase.
+   - **Server URL (set on the Vapi assistant)**: `https://<project>.supabase.co/functions/v1/vapi-webhook`
+   - **Payload Logic**: Read Vapi's structured outputs from `message.analysis.structuredData`.
    - **Schema**:
      ```json
      {
@@ -86,7 +85,7 @@ This document outlines the step-by-step execution plan to build, configure, and 
        "required": ["patient_name", "procedure_interest", "language_spoken"]
      }
      ```
-   - **Constraint**: Trigger strictly on `call.analysis.completed` and explicitly exclude `end-of-call-report`.
+   - **Constraint**: Process only `end-of-call-report`; return 200 for all other event types.
 
 ## 6. The Web SDK Demo Interface (Offline Walk-In)
 

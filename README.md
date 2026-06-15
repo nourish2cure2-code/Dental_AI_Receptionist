@@ -17,9 +17,8 @@ This project provides the system prompts, data schemas, webhook logic, and strat
 This project is built to operate on a highly efficient, minimal-budget stack:
 
 - **Vapi.ai**: Core voice AI conversational engine (using Cartesia voices and Deepgram transcriber).
-- **Twilio**: Local Mexican (+52 686) phone numbers routed via webhooks.
-- **n8n**: Webhook extraction and appointment routing.
-- **Supabase**: Primary PostgreSQL database for storing extracted patient leads.
+- **Telnyx**: Telephony — the inbound phone number (`TELNYX_PHONE_NUMBER` in `.env`) routed to the Vapi assistant via a BYO SIP trunk.
+- **Supabase**: Primary PostgreSQL database (`leads` + `enterprise_leads`) plus the **`vapi-webhook` Edge Function** (Deno), which catches the Vapi `end-of-call-report` and writes leads directly.
 - **Vapi Web SDK**: Used for a one-click local web demo to pitch clinics without requiring mobile verification or complex SIP trunks during the sales process.
 - **Google Antigravity IDE & Claude Code Pro**: The primary development environment and builder AI used to orchestrate the skills and payloads.
 
@@ -29,8 +28,6 @@ This project is built to operate on a highly efficient, minimal-budget stack:
 - `.agents/skills/` (Symlinked from `.claude/skills/`):
   - `vapi-spanglish-persona`: System prompts enforcing the Northern Mexican Spanish / English code-switching.
   - `build-vapi-web-demo`: Scaffolding for the offline laptop walk-in pitch interface.
-  - `n8n-webhook-extraction`: JSON schemas for post-call data extraction (patient name, procedure interest, language) and Supabase routing.
-  - `twilio-vapi-bridge`: Routing configurations for inbound Twilio numbers to Vapi.
 
 ## 🚀 Getting Started
 

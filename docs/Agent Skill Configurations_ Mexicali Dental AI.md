@@ -66,34 +66,13 @@ description: Generates a single-file index.html application using the Vapi Web S
 * Script must auto-initialize Vapi instance using provided Public Key and Assistant ID.  
 * Bind local microphone via navigator.mediaDevices.getUserMedia.
 
-### **Skill 3: Structured Output, Supabase & Webhook Routing**
+### **Skill 3: Structured Output & Supabase Edge Function Routing**
 
-**Path:** .claude/skills/n8n-webhook-extraction/SKILL.md
-
----  
-name: n8n-webhook-extraction  
-description: Configures Vapi structured outputs JSON schema, generates Supabase SQL schema for the `leads` table, and routes data via n8n.  
----
+**Path:** .claude/skills/build-vapi-web-demo/SKILL.md (extraction is handled in the `vapi-webhook` Edge Function, not a standalone skill)
 
 **Execution Directives:**
 
-* Generate JSON schema extracting: patient\_name, procedure\_interest (enum: veneers, implants, whitening), language\_spoken.  
-* Generate the `CREATE TABLE` SQL command for the Supabase `leads` database table.
-* **Constraint:** Webhook triggers must *exclude* end-of-call-report.  
-* Webhook triggers must *strictly require* call.analysis.completed.  
-* Payload mapping logic must target $json.message.artifact.structuredData and map into the n8n Supabase Node.
-
-### **Skill 4: Twilio VoIP Bootstrap Provisioning**
-
-**Path:** .claude/skills/twilio-vapi-bridge/SKILL.md
-
-\---  
-name: twilio-vapi-bridge  
-description: Generates configuration commands to route an inbound \+52 Twilio number directly to a Vapi.ai assistant bypassing SIP trunking.  
-\---
-
-**Execution Directives:**
-
-* Generate curl POST commands targeting Vapi /phone-number endpoint.  
-* Map twilioAccountSid and twilioAuthToken to the specified Vapi assistantId.  
-* Configure Twilio inbound webhook URL to point to Vapi inbound SIP/Webhook handler.
+* Generate the JSON schema extracting: patient\_name, procedure\_interest (enum: veneers, implants, whitening), language\_spoken.  
+* Generate the `CREATE TABLE` SQL command for the Supabase `leads` table.
+* The Supabase Edge Function `vapi-webhook` (`supabase/functions/vapi-webhook/index.ts`) reads `message.analysis.structuredData` from the `end-of-call-report` and inserts straight into Supabase with the service-role key.
+* **Constraint:** Process only `end-of-call-report`; return `200` for every other event type.

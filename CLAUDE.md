@@ -4,6 +4,16 @@
 
 You are operating as an autonomous AI software engineer. Your task is to build BajaDentalAI, a localized WhatsApp booking agent for dental clinics in Mexicali, Mexico. You must read and adhere to fable5_bajadentalai_prd.md for the overarching architectural roadmap.
 
+## Current Architecture (AUTHORITATIVE — read before proposing changes)
+
+> The build has moved past the original PRD's WhatsApp-text vision below. This section describes what is **actually deployed**. If it conflicts with older docs, this wins.
+
+- **Telephony:** Inbound calls arrive on a **Telnyx** number (`TELNYX_PHONE_NUMBER` in `.env`) routed to the Vapi assistant via a BYO SIP trunk (see `vapi_config/telnyx_sip_setup.sh`).
+- **Voice front end:** A Vapi.ai assistant ("Sofía", `VAPI_ASSISTANT_ID` in `.env`) answers inbound calls. Persona lives in `vapi_config/system_prompt.txt`. The structured-data extraction schema lives in `vapi_config/*structured_data_schema*.json` and is set on the assistant under `analysisPlan.structuredDataPlan`.
+- **Ingestion:** Vapi POSTs the `end-of-call-report` to the Supabase Edge Function **`vapi-webhook`** (`supabase/functions/vapi-webhook/index.ts`, Deno). It reads `message.analysis.structuredData` and writes to Postgres with the service-role key. This is the **only** integration/ingestion layer.
+- **Storage (Supabase Postgres):** `leads` (base tier) + `enterprise_leads` (enterprise tier — full qualification profile). Both have RLS enabled. The base table uses Postgres enum types (`procedure_interest_enum`, `language_enum`); the Edge Function coerces out-of-range values so an insert never throws.
+- **No separate automation layer.** Ingestion runs solely through the Edge Function. Outbound alerts (e.g. Telnyx SMS), if added, fire directly from it.
+
 ## 1. Project Context
 
 Domain: Medical Tourism in Mexicali / Los Algodones.
@@ -38,7 +48,7 @@ Use early returns and throw descriptive errors.
 
 Error Handling:
 
-Never let the webhook crash. Always return a 200 OK to Meta/Twilio even if internal processing fails, to prevent webhook disabling.
+Never let the webhook crash. Always return a 200 OK to the caller (Telnyx/Vapi) even if internal processing fails, to prevent webhook disabling.
 
 Log all errors to standard output with contextual data.
 

@@ -7,7 +7,7 @@ Your immediate objective is to build a flawless, zero-latency local web applicat
 
 1. The Constraint: The "No Phone" Mandate
 
-The founder currently does not possess a mobile phone. You must never suggest or write code for SMS verification, mobile app deployment, or Twilio SMS routing.
+The founder currently does not possess a mobile phone. You must never suggest or write code for SMS verification, mobile app deployment, or SMS routing of any kind.
 100% of the demonstration capability must rely on the laptop's built-in microphone and speakers via a web browser.
 
 1. Tech Stack & Execution Environment

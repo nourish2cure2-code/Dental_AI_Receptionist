@@ -12,9 +12,9 @@ To maximize efficiency, assign your AI subscriptions to the following specific t
 
 ## **Phase 1: Overcoming the "No Phone" Barrier**
 
-You need a way to receive 2FA SMS texts to sign up for Twilio/Vapi, and a way to demo the product without a mobile device.
+You need a way to receive 2FA SMS texts to sign up for Telnyx/Vapi, and a way to demo the product without a mobile device.
 
-1. **The 2FA Workaround:** Download Skype or use Google Voice on your desktop. Buy a cheap ($3-$5) VoIP number that can receive SMS texts. You will use this *only* for creating your Twilio and Cloudflare accounts.  
+1. **The 2FA Workaround:** Download Skype or use Google Voice on your desktop. Buy a cheap ($3-$5) VoIP number that can receive SMS texts. You will use this *only* for creating your Telnyx and Cloudflare accounts.  
 2. **The Demo Workaround:** You will use Vapi's Web SDK. You will bring your laptop into the clinic, connect to their guest Wi-Fi (or a desktop hotspot if you have a separate mobile broadband device), and demo the AI directly through your computer's microphone and speakers.
 
 ## **Phase 2: Digital Foundation (\< $5)**
@@ -26,11 +26,11 @@ You need a way to receive 2FA SMS texts to sign up for Twilio/Vapi, and a way to
    * Forward it to your personal Gmail.  
    * *Agent Action:* Have Gemini generate your professional outreach templates to send from this alias.
 
-## **Phase 3: Telephony & Twilio Setup ($15)**
+## **Phase 3: Telephony & Telnyx Setup**
 
-1. **Create Twilio Account:** Sign up and fund the absolute minimum ($15).  
-2. **Buy a Mexican Local Number:** Search Twilio for a local \+52 686 (Mexicali) number. This costs roughly $6.25/month.  
-3. **Configure SIP/Webhooks:** Do not build complex SIP trunks yet. We are bootstrapping. You will simply point this Twilio number's "Webhook URL" to your Vapi assistant endpoint in Phase 4\.
+1. **Create Telnyx Account:** Sign up and fund the absolute minimum.  
+2. **Provision a Local Number:** Provision a phone number via Telnyx to route inbound calls to your Vapi assistant.  
+3. **Configure SIP/Webhooks:** Point this Telnyx number's voice routing to your Vapi assistant endpoint in Phase 4 (see `vapi_config/telnyx_sip_setup.sh`).
 
 ## **Phase 4: Vapi AI Engineering ($0 \- Uses $10 Free Credit)**
 
@@ -40,13 +40,13 @@ You need a way to receive 2FA SMS texts to sign up for Twilio/Vapi, and a way to
    * Instruct Claude Code Pro to generate a vapi-config.json payload.  
    * *System Prompt Injection (Let Gemini write this):* "You are a bilingual dental receptionist in Mexicali. You speak Northern Mexican Spanish but immediately switch to fluent English if the user speaks English. Your goal is to book a consultation for veneers. You are polite but efficient."  
    * Set the Voice Provider to Cartesia (included in Vapi) and select a bilingual voice profile.  
-3. **Link Twilio to Vapi:** In the Vapi dashboard, go to Telephony \-\> Import Twilio Number. Input your Twilio Account SID and Auth Token.
+3. **Link Telnyx to Vapi:** Bind your Telnyx number to Vapi via a BYO SIP trunk (run `vapi_config/telnyx_sip_setup.sh`) and complete the SIP Connection routing in the Telnyx portal.
 
-## **Phase 5: Database & Lead Routing (Supabase + n8n)**
+## **Phase 5: Database & Lead Routing (Supabase Edge Function)**
 
 1. **Supabase Initialization:** Create a free project on Supabase.
 2. **Schema Execution:** Create a `leads` table with columns for `patient_name`, `procedure_interest`, and `language_spoken`.
-3. **n8n Webhook Mapping:** Set up n8n to catch the Vapi webhook (`call.analysis.completed`) and use the Supabase node to insert the structured data into your database.
+3. **Edge Function Ingestion:** Deploy the `vapi-webhook` Edge Function to catch the Vapi `end-of-call-report` and insert the structured data straight into your Supabase database.
 
 ## **Phase 6: The Web-SDK Demo Interface (Crucial Step)**
 
