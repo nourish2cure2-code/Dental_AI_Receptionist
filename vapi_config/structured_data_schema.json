@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "properties": {
+    "patient_name": {
+      "type": "string",
+      "description": "The first and last name of the caller. If not provided, output 'Unknown'."
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "The phone number of the caller, formatted with the country code (e.g., +17605551234 or +526865551234). The system automatically captures the caller ID, but confirm it if they mention a different callback number."
+    },
+    "procedure_interest": {
+      "type": "string",
+      "enum": ["implants", "veneers", "whitening", "other", "unknown"],
+      "description": "The primary dental procedure the patient is interested in."
+    },
+    "language_spoken": {
+      "type": "string",
+      "enum": ["es", "en", "bilingual", "unknown"],
+      "description": "The primary language the caller spoke during the call."
+    },
+    "call_summary": {
+      "type": "string",
+      "description": "A brief 2-3 sentence summary of the caller's needs, their timeline, and any specific questions they asked about pricing or border crossing."
+    }
+  },
+  "required": [
+    "patient_name",
+    "phone_number",
+    "procedure_interest",
+    "language_spoken",
+    "call_summary"
+  ]
+}
