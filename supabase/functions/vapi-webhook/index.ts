@@ -175,6 +175,54 @@ Deno.serve(async (req) => {
       msg?.assistant?.metadata?.clinic_id ??
       null;
 
+    const campaignType = 
+      call.assistantOverrides?.metadata?.campaign_type ??
+      call.metadata?.campaign_type ??
+      msg?.assistant?.metadata?.campaign_type ??
+      null;
+
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+
+    // --- 0) B2B Agency Lead Branch ------------------------------------------
+    if (campaignType === "b2b_agency") {
+      const b2bLead = {
+        call_id: callId,
+        clinic_name: structured.clinic_name ?? null,
+        owner_name: structured.owner_name ?? null,
+        phone_number: phone ?? structured.phone_number ?? null,
+        current_reception_pain: structured.current_reception_pain ?? null,
+        pilot_appointment: structured.pilot_appointment ?? "not_booked",
+        summary: summary
+      };
+
+      const { error: b2bErr } = await supabase
+        .from("agency_leads")
+        .upsert(b2bLead, { onConflict: "call_id" });
+        
+      if (b2bErr) errors.push(`agency_leads: ${b2bErr.message}`);
+
+      // Fire B2B SMS Alert to the Agency Owner
+      const alertTo = Deno.env.get("CLINIC_ALERT_PHONE"); // Assuming agency owner uses this env var
+      if (alertTo) {
+        const text = `HOT B2B LEAD: ${structured.owner_name ?? "An owner"} from ${structured.clinic_name ?? "a clinic"} wants a pilot setup (${structured.pilot_appointment}). Pain point: ${structured.current_reception_pain}. Call them ASAP: ${phone ?? structured.phone_number}`;
+        try {
+          await sendTelnyxSms(alertTo, text);
+        } catch (smsErr) {
+          errors.push(`telnyx_sms_b2b: ${smsErr instanceof Error ? smsErr.message : String(smsErr)}`);
+        }
+      }
+
+      if (errors.length) console.error("vapi-webhook b2b partial failure:", errors.join(" | "));
+
+      return new Response(
+        JSON.stringify({ ok: errors.length === 0, errors }),
+        { status: 200, headers: { ...CORS, "Content-Type": "application/json" } },
+      );
+    }
+
     // Safety guardrail (CLAUDE.md): acute symptoms must reach a human for care,
     // never an automated sales follow-up. Surface it loudly in the logs so an
     // operator/alerting integration can pick it up.
@@ -185,11 +233,6 @@ Deno.serve(async (req) => {
           `phone=${phone ?? "?"} — caller reported acute symptoms. Route to a clinician for a CARE callback, not sales.`,
       );
     }
-
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
 
     // --- 1) Base `leads` table (backward compatible) -----------------------
     const lead = {

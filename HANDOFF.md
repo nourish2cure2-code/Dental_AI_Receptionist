@@ -55,7 +55,7 @@ Caller → Telnyx number (+1 760…) ──SIP──► Vapi assistant "Sofía"
 - [x] **Repeatable onboarding runbook/script:** provision Telnyx number → clone Vapi assistant → load that clinic's KB + prompt → set that clinic's secrets → point `server.url`.
 
 ### Tier 3 — make the pitch fully true + polish
-- [ ] **Activate the Telnyx SMS** (it's built, just unconfigured). Set Supabase Edge Function secrets:
+- [x] **Activate the Telnyx SMS** (it's built, just unconfigured). Set Supabase Edge Function secrets:
       `supabase secrets set TELNYX_API_KEY=… TELNYX_PHONE_NUMBER=+1760… CLINIC_ALERT_PHONE=+1… [TELNYX_MESSAGING_PROFILE_ID=…] --project-ref gldxvazsoqxyfuxeursn`
       (`CLINIC_ALERT_PHONE` = the clinic closer's number. The `from` number must be SMS-enabled on Telnyx.)
 - [x] **Live booking (the big differentiator).** This is your plan from `implementation_plan.md`:

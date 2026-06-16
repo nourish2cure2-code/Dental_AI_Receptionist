@@ -510,9 +510,24 @@
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
                 <a href="https://calendly.com/baja-dental-ai/pilot" target="_blank" rel="noopener noreferrer" data-i18n="pilot_cta"
-                   class="bg-[#00B0FF] text-[#0F0F0F] font-black text-sm uppercase tracking-widest px-10 py-5 hover:bg-[#FAFAFA] transition-colors">
+                   class="bg-[#0F0F0F] text-[#FAFAFA] border border-[#FAFAFA] border-opacity-20 font-black text-sm uppercase tracking-widest px-10 py-5 hover:bg-[#FAFAFA] hover:text-[#0F0F0F] transition-colors">
                     Empieza — Piloto de $500
                 </a>
+                <button id="vapi-b2b-trigger"
+                        class="bg-[#00B0FF] text-[#0F0F0F] font-black text-sm uppercase tracking-widest px-8 py-5 hover:bg-[#FAFAFA] transition-colors flex items-center gap-4">
+                    <svg id="b2b-icon-idle" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.41 2.72 6.23 6 6.72V21h2v-2.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                    </svg>
+                    <span id="b2b-icon-connecting" class="connecting-spinner hidden w-5 h-5"></span>
+                    <span id="b2b-icon-active" class="hidden items-end gap-[3px] h-5">
+                        <span class="bar bar-1 h-5"></span>
+                        <span class="bar bar-2 h-5"></span>
+                        <span class="bar bar-3 h-5"></span>
+                        <span class="bar bar-4 h-5"></span>
+                        <span class="bar bar-5 h-5"></span>
+                    </span>
+                    <span id="b2b-btn-label">Ventas IA</span>
+                </button>
             </div>
         </div>
     </section>
@@ -711,9 +726,11 @@
         /* ---------------- Vapi ---------------- */
         const VAPI_PUBLIC_KEY   = "43d6c707-ebbc-4760-a931-6501689b573d";
         const VAPI_ASSISTANT_ID = "01ff55d9-1977-4987-abcc-8ee8d4c2690f";
+        const VAPI_B2B_ASSISTANT_ID = "YOUR_B2B_ASSISTANT_ID_HERE";
 
         let vapiInstance = null;
         let isCallActive = false;
+        let currentTarget = null; // 'demo' or 'b2b'
 
         const trigger    = document.getElementById('vapi-demo-trigger');
         const label      = document.getElementById('hero-btn-label');
@@ -722,44 +739,72 @@
         const iconActive = document.getElementById('hero-icon-active');
         const status     = document.getElementById('hero-status');
 
+        const triggerB2B    = document.getElementById('vapi-b2b-trigger');
+        const labelB2B      = document.getElementById('b2b-btn-label');
+        const iconIdleB2B   = document.getElementById('b2b-icon-idle');
+        const iconConnB2B   = document.getElementById('b2b-icon-connecting');
+        const iconActiveB2B = document.getElementById('b2b-icon-active');
+
+        // Expose t() for setState
+        window.t = t;
+
         function setState(state) {
             lastState = state;
-            iconIdle.classList.add('hidden');
-            iconConn.classList.add('hidden');
-            iconActive.classList.remove('flex');
-            iconActive.classList.add('hidden');
-            trigger.classList.remove('ring-idle', 'ring-active');
-            trigger.style.backgroundColor = '';
-
-            if (state === 'idle') {
+            
+            // Reset both buttons
+            if(trigger) {
                 iconIdle.classList.remove('hidden');
-                trigger.classList.add('ring-idle');
+                iconConn.classList.add('hidden');
+                iconActive.classList.remove('flex');
+                iconActive.classList.add('hidden');
+                trigger.classList.remove('ring-idle', 'ring-active');
+                trigger.style.backgroundColor = '';
                 label.textContent = t('btn_idle');
-                status.textContent = t('status_idle');
+            }
+            if(triggerB2B) {
+                iconIdleB2B.classList.remove('hidden');
+                iconConnB2B.classList.add('hidden');
+                iconActiveB2B.classList.remove('flex');
+                iconActiveB2B.classList.add('hidden');
+                triggerB2B.classList.remove('ring-idle', 'ring-active');
+                triggerB2B.style.backgroundColor = '';
+                labelB2B.textContent = 'Ventas IA';
+            }
+            if(status) status.textContent = t('status_idle');
+
+            if (!currentTarget || state === 'idle') {
                 isCallActive = false;
-            } else if (state === 'connecting') {
-                iconConn.classList.remove('hidden');
-                label.textContent = t('btn_connecting');
-                status.textContent = t('status_connecting');
-            } else if (state === 'active') {
-                iconActive.classList.remove('hidden');
-                iconActive.classList.add('flex');
-                trigger.classList.add('ring-active');
-                trigger.style.backgroundColor = '#ef4444';
-                label.textContent = t('btn_end');
-                status.textContent = t('status_listening');
+                currentTarget = null;
+                if(trigger) trigger.classList.add('ring-idle');
+                if(triggerB2B) triggerB2B.classList.add('ring-idle');
+                return;
+            }
+
+            const activeBtn = currentTarget === 'demo' ? trigger : triggerB2B;
+            const activeIconIdle = currentTarget === 'demo' ? iconIdle : iconIdleB2B;
+            const activeIconConn = currentTarget === 'demo' ? iconConn : iconConnB2B;
+            const activeIconActive = currentTarget === 'demo' ? iconActive : iconActiveB2B;
+            const activeLabel = currentTarget === 'demo' ? label : labelB2B;
+
+            activeIconIdle.classList.add('hidden');
+
+            if (state === 'connecting') {
+                activeIconConn.classList.remove('hidden');
+                activeLabel.textContent = t('btn_connecting');
+                if(status) status.textContent = t('status_connecting');
+            } else if (state === 'active' || state === 'speaking') {
+                activeIconActive.classList.remove('hidden');
+                activeIconActive.classList.add('flex');
+                activeBtn.classList.add('ring-active');
+                activeBtn.style.backgroundColor = '#ef4444';
+                activeLabel.textContent = t('btn_end');
+                if(status) status.textContent = state === 'active' ? t('status_listening') : t('status_speaking');
                 isCallActive = true;
-            } else if (state === 'speaking') {
-                iconActive.classList.remove('hidden');
-                iconActive.classList.add('flex');
-                trigger.classList.add('ring-active');
-                trigger.style.backgroundColor = '#ef4444';
-                label.textContent = t('btn_end');
-                status.textContent = t('status_speaking');
             }
         }
 
-        async function startCall() {
+        async function startCall(target) {
+            currentTarget = target;
             try {
                 if (!vapiInstance) {
                     vapiInstance = new Vapi(VAPI_PUBLIC_KEY);
@@ -770,16 +815,23 @@
                     vapiInstance.on('error', (e) => {
                         console.error('[Vapi]', e);
                         setState('idle');
-                        status.textContent = t('status_err_conn');
+                        if(status) status.textContent = t('status_err_conn');
                     });
                 }
                 setState('connecting');
                 await navigator.mediaDevices.getUserMedia({ audio: true });
-                await vapiInstance.start(VAPI_ASSISTANT_ID, { metadata: { source: 'homepage_hero' } });
+                
+                const astId = target === 'demo' ? VAPI_ASSISTANT_ID : VAPI_B2B_ASSISTANT_ID;
+                const src = target === 'demo' ? 'homepage_hero' : 'b2b_sales';
+                const camp = target === 'demo' ? null : 'b2b_agency';
+                
+                await vapiInstance.start(astId, { 
+                    metadata: { source: src, campaign_type: camp } 
+                });
             } catch (err) {
                 console.error('[Mic/Setup]', err);
                 setState('idle');
-                status.textContent = t('status_err_mic');
+                if(status) status.textContent = t('status_err_mic');
             }
         }
 
@@ -788,14 +840,31 @@
             btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang')));
         });
 
-        trigger.addEventListener('click', () => {
-            if (isCallActive) {
-                vapiInstance.stop();
-                setState('idle');
-            } else {
-                startCall();
-            }
-        });
+        if(trigger) {
+            trigger.addEventListener('click', () => {
+                if (isCallActive && currentTarget === 'demo') {
+                    vapiInstance.stop();
+                    setState('idle');
+                } else if (!isCallActive) {
+                    startCall('demo');
+                }
+            });
+        }
+
+        if(triggerB2B) {
+            triggerB2B.addEventListener('click', () => {
+                if (isCallActive && currentTarget === 'b2b') {
+                    vapiInstance.stop();
+                    setState('idle');
+                } else if (!isCallActive) {
+                    if (VAPI_B2B_ASSISTANT_ID === 'YOUR_B2B_ASSISTANT_ID_HERE') {
+                        alert('Por favor configura el VAPI_B2B_ASSISTANT_ID en el código para activar este botón.');
+                        return;
+                    }
+                    startCall('b2b');
+                }
+            });
+        }
 
         /* ---------------- parallax hero ---------------- */
         const heroParallax = document.getElementById('hero-parallax');
