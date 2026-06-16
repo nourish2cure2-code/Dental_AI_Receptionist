@@ -216,8 +216,8 @@
             <p data-i18n="hero_p" class="text-[#FAFAFA] opacity-70 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-10">
                 Las clínicas premium no pierden pacientes con la competencia — los pierden con el buzón
                 de voz. Baja Dental AI contesta cada lead entrante en menos de un segundo, en español e
-                inglés con fluidez, agenda la consulta y registra el lead calificado en tu CRM. Cero
-                ingresos perdidos. Cero carga para recepción.
+                inglés con fluidez, califica al paciente, registra el lead enriquecido en tu CRM y le
+                avisa a tu equipo por mensaje al instante. Cero ingresos perdidos. Cero carga para recepción.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
@@ -373,15 +373,14 @@
             </h2>
 
             <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
-                <!-- WhatsApp Integration -->
+                <!-- Instant SMS Alert -->
                 <div class="border border-[#FAFAFA] border-opacity-10 bg-[#0F0F0F] p-8 md:p-10 hover:border-opacity-30 transition-colors">
                     <svg class="w-8 h-8 text-[#00B0FF] mb-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17.47 5.09C15.82 3.44 13.62 2.53 11.28 2.53 6.64 2.53 2.87 6.3 2.87 10.94c0 1.48.39 2.93 1.13 4.2L2.53 20.35l5.35-1.4c1.23.68 2.62 1.04 4.05 1.04h.01c4.64 0 8.41-3.77 8.41-8.41 0-2.25-.88-4.36-2.48-5.96h-.4zM11.28 18.29h-.01c-1.25 0-2.48-.34-3.56-.97l-.26-.15-2.65.69.7-2.58-.17-.26c-.69-1.09-1.05-2.35-1.05-3.64 0-3.69 3-6.69 6.7-6.69 1.79 0 3.47.7 4.74 1.97 1.26 1.27 1.96 2.96 1.96 4.75 0 3.69-3 6.69-6.7 6.69z" />
-                        <path d="M14.96 13.23c-.2-.1-1.18-.58-1.36-.65-.18-.06-.32-.1-.45.1-.13.2-.52.65-.63.78-.11.13-.23.15-.43.05-.2-.1-1.01-.37-1.92-1.18-.71-.63-1.19-1.41-1.33-1.61-.13-.2-.01-.31.09-.41.09-.09.2-.23.3-.35.1-.11.13-.2.2-.33.06-.13.03-.25-.02-.35-.05-.1-.45-1.08-.62-1.48-.16-.39-.33-.34-.45-.34h-.39c-.13 0-.35.05-.53.25-.18.2-1.02 1-1.02 2.45s1.05 2.85 1.2 3.05c.15.2 2.08 3.18 5.04 4.46.7.3 1.25.48 1.68.61.7.22 1.34.19 1.84.12.56-.08 1.18-.48 1.35-.95.17-.47.17-.87.12-.95-.05-.08-.19-.13-.39-.23z" />
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
                     </svg>
-                    <h3 data-i18n-html="omni_w_title" class="text-[#FAFAFA] font-black uppercase text-xl tracking-tight leading-tight mb-4">Seguimiento Automático<br>por WhatsApp</h3>
+                    <h3 data-i18n-html="omni_w_title" class="text-[#FAFAFA] font-black uppercase text-xl tracking-tight leading-tight mb-4">Alerta Instantánea<br>de Lead por SMS</h3>
                     <p data-i18n="omni_w_body" class="text-[#FAFAFA] opacity-50 text-sm leading-relaxed mb-6">
-                        En el instante en que la IA termina la llamada, envía un mensaje de WhatsApp automatizado al paciente. Entrega PDFs con precios, ubicaciones de Google Maps para cruzar la frontera y enlaces de confirmación de citas antes de que el paciente siquiera guarde su teléfono en el bolsillo.
+                        En el instante en que la IA cuelga, le envía a tu equipo un mensaje de texto con el lead calificado — nombre, procedimiento, presupuesto, tiempo y cualquier inquietud sobre la frontera — para que llamen de vuelta mientras el paciente sigue decidiendo. La rapidez gana el caso.
                     </p>
                 </div>
 
@@ -392,7 +391,7 @@
                     </svg>
                     <h3 data-i18n-html="omni_c_title" class="text-[#FAFAFA] font-black uppercase text-xl tracking-tight leading-tight mb-4">Integración Nativa<br>con tu CRM</h3>
                     <p data-i18n="omni_c_body" class="text-[#FAFAFA] opacity-50 text-sm leading-relaxed mb-6">
-                        No necesitas cambiar tu ecosistema actual. La IA actúa como tu SDR digital, inyectando silenciosamente leads enriquecidos (nombre, interés en implantes o diseño de sonrisa, idioma hablado y resumen de la llamada) directamente en tu GoHighLevel, HubSpot, Pipedrive o base de datos personalizada.
+                        No necesitas cambiar tu ecosistema actual. La IA actúa como tu SDR digital, registrando silenciosamente cada lead enriquecido (nombre, procedimiento de interés, presupuesto, urgencia, idioma y un resumen completo de la llamada) en una base de datos segura y consultable que tu equipo usa desde el primer día, lista para exportar a GoHighLevel, HubSpot o Pipedrive.
                     </p>
                 </div>
             </div>
@@ -549,7 +548,7 @@
                 nav_pilot:    `Iniciar Piloto`,
                 hero_eyebrow: `Recepción con IA de Voz · Clínicas Fronterizas de Mexicali`,
                 hero_h1:      `Cada llamada perdida<br>es un implante de <span class="text-[#00B0FF]">$6,000</span><br>que se va.`,
-                hero_p:       `Las clínicas premium no pierden pacientes con la competencia — los pierden con el buzón de voz. Baja Dental AI contesta cada lead entrante en menos de un segundo, en español e inglés con fluidez, agenda la consulta y registra el lead calificado en tu CRM. Cero ingresos perdidos. Cero carga para recepción.`,
+                hero_p:       `Las clínicas premium no pierden pacientes con la competencia — los pierden con el buzón de voz. Baja Dental AI contesta cada lead entrante en menos de un segundo, en español e inglés con fluidez, califica al paciente, registra el lead enriquecido en tu CRM y le avisa a tu equipo por mensaje al instante. Cero ingresos perdidos. Cero carga para recepción.`,
                 hero_demo_link: `Demo para recepción en clínica`,
                 stat_1: `De las llamadas entrantes quedan sin contestar en horas pico`,
                 stat_2: `Latencia de respuesta, indistinguible de un humano`,
@@ -567,10 +566,10 @@
                 feat4_body:  `Nombre, procedimiento de interés, idioma y ventana de retorno, estructurados y enviados a tu CRM en cuanto termina la llamada. Tu equipo da seguimiento en caliente, no en frío.`,
                 omni_eyebrow: `Ecosistema Omnicanal`,
                 omni_h2:      `El trabajo no termina<br>cuando cuelgas el teléfono.`,
-                omni_w_title: `Seguimiento Automático<br>por WhatsApp`,
-                omni_w_body:  `En el instante en que la IA termina la llamada, envía un mensaje de WhatsApp automatizado al paciente. Entrega PDFs con precios, ubicaciones de Google Maps para cruzar la frontera y enlaces de confirmación de citas antes de que el paciente siquiera guarde su teléfono en el bolsillo.`,
+                omni_w_title: `Alerta Instantánea<br>de Lead por SMS`,
+                omni_w_body:  `En el instante en que la IA cuelga, le envía a tu equipo un mensaje de texto con el lead calificado — nombre, procedimiento, presupuesto, tiempo y cualquier inquietud sobre la frontera — para que llamen de vuelta mientras el paciente sigue decidiendo. La rapidez gana el caso.`,
                 omni_c_title: `Integración Nativa<br>con tu CRM`,
-                omni_c_body:  `No necesitas cambiar tu ecosistema actual. La IA actúa como tu SDR digital, inyectando silenciosamente leads enriquecidos (nombre, interés en implantes o diseño de sonrisa, idioma hablado y resumen de la llamada) directamente en tu GoHighLevel, HubSpot, Pipedrive o base de datos personalizada.`,
+                omni_c_body:  `No necesitas cambiar tu ecosistema actual. La IA actúa como tu SDR digital, registrando silenciosamente cada lead enriquecido (nombre, procedimiento de interés, presupuesto, urgencia, idioma y un resumen completo de la llamada) en una base de datos segura y consultable que tu equipo usa desde el primer día, lista para exportar a GoHighLevel, HubSpot o Pipedrive.`,
                 led_eyebrow: `El Balance de Fricción`,
                 led_h2:      `Recepción tradicional vs. activación instantánea.`,
                 led_col1: `Punto de Fricción`,
@@ -612,7 +611,7 @@
                 nav_pilot:    `Start Pilot`,
                 hero_eyebrow: `Voice AI Reception · Mexicali Border Clinics`,
                 hero_h1:      `Every missed call<br>is a <span class="text-[#00B0FF]">$6,000</span><br>implant lost.`,
-                hero_p:       `Premium clinics don't lose patients to competitors — they lose them to voicemail. Baja Dental AI answers every inbound lead in under a second, in fluent Spanish and English, books the consult, and drops the qualified lead into your CRM. Zero missed revenue. Zero front-desk overhead.`,
+                hero_p:       `Premium clinics don't lose patients to competitors — they lose them to voicemail. Baja Dental AI answers every inbound lead in under a second, in fluent Spanish and English, qualifies the patient, drops the enriched lead into your CRM, and instantly texts your closer to follow up. Zero missed revenue. Zero front-desk overhead.`,
                 hero_demo_link: `Walk-in clinic staging demo`,
                 stat_1: `Inbound calls go unanswered at peak hours`,
                 stat_2: `Response latency, indistinguishable from human`,
@@ -630,10 +629,10 @@
                 feat4_body:  `Name, procedure interest, language, and callback window structured and pushed to your CRM the moment the call ends. Your team follows up warm, not cold.`,
                 omni_eyebrow: `Omnichannel Ecosystem`,
                 omni_h2:      `The job isn't done<br>when the call ends.`,
-                omni_w_title: `Automated WhatsApp<br>Follow-up`,
-                omni_w_body:  `The instant the AI hangs up, it triggers an automated WhatsApp message to the patient. It delivers pricing PDFs, Google Maps pins for border crossing, and appointment booking links before the patient even puts their phone back in their pocket.`,
+                omni_w_title: `Instant Hot-Lead<br>Text Alert`,
+                omni_w_body:  `The instant the AI hangs up, it texts your closer the qualified lead — name, procedure, budget, timeline, and any border concerns — so your team calls back while the patient is still deciding. Speed-to-lead wins the case.`,
                 omni_c_title: `Native Integration<br>with your CRM`,
-                omni_c_body:  `You don't need to change your tech stack. The AI acts as your digital SDR, silently injecting enriched leads (name, implant interest, language, and call summary) directly into your GoHighLevel, HubSpot, Pipedrive, or custom database.`,
+                omni_c_body:  `You don't need to change your tech stack. The AI acts as your digital SDR, silently logging every enriched lead (name, procedure interest, budget, urgency, language, and a full call summary) into a secure, queryable lead database your team works from day one — ready to export to GoHighLevel, HubSpot, or Pipedrive.`,
                 led_eyebrow: `The Friction Ledger`,
                 led_h2:      `Traditional reception vs. instant onboarding.`,
                 led_col1: `Friction Point`,
