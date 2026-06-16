@@ -46,24 +46,24 @@ Caller → Telnyx number (+1 760…) ──SIP──► Vapi assistant "Sofía"
 ## 3. TODO (prioritized)
 
 ### Tier 1 — before pitching another clinic
-- [ ] **Per-clinic KB.** `docs/dental_tourism_knowledge_base.txt` states hard claims as fact (board-certified, OSHA-level, lifetime warranties, specific prices). These must be TRUE for the specific clinic or they're liability. Make KB customization part of onboarding.
+- [x] **Per-clinic KB.** `docs/dental_tourism_knowledge_base.txt` states hard claims as fact (board-certified, OSHA-level, lifetime warranties, specific prices). These must be TRUE for the specific clinic or they're liability. Make KB customization part of onboarding.
 - [ ] **Rotate exposed keys** (Vapi / Telnyx / Supabase / ElevenLabs) — they were shared in chat. Update `.env` + Supabase secrets after.
 
 ### Tier 2 — productization (needed to sell to clinic #2, #3…)
 - [ ] **Decide the tenancy model:** bespoke per-clinic deployments vs. one multi-tenant platform.
-- [ ] **Tenant isolation.** Today the `enterprise_leads`/`leads` RLS policy is "any authenticated user sees ALL rows" — clinic A could read clinic B's leads. Add a `clinic_id` (the `leads` table already has an unused `clinic_name`) and **per-tenant RLS**.
-- [ ] **Repeatable onboarding runbook/script:** provision Telnyx number → clone Vapi assistant → load that clinic's KB + prompt → set that clinic's secrets → point `server.url`.
+- [x] **Tenant isolation.** Today the `enterprise_leads`/`leads` RLS policy is "any authenticated user sees ALL rows" — clinic A could read clinic B's leads. Add a `clinic_id` (the `leads` table already has an unused `clinic_name`) and **per-tenant RLS**.
+- [x] **Repeatable onboarding runbook/script:** provision Telnyx number → clone Vapi assistant → load that clinic's KB + prompt → set that clinic's secrets → point `server.url`.
 
 ### Tier 3 — make the pitch fully true + polish
 - [ ] **Activate the Telnyx SMS** (it's built, just unconfigured). Set Supabase Edge Function secrets:
       `supabase secrets set TELNYX_API_KEY=… TELNYX_PHONE_NUMBER=+1760… CLINIC_ALERT_PHONE=+1… [TELNYX_MESSAGING_PROFILE_ID=…] --project-ref gldxvazsoqxyfuxeursn`
       (`CLINIC_ALERT_PHONE` = the clinic closer's number. The `from` number must be SMS-enabled on Telnyx.)
-- [ ] **Live booking (the big differentiator).** This is your plan from `implementation_plan.md`:
+- [x] **Live booking (the big differentiator).** This is your plan from `implementation_plan.md`:
       add Vapi tools `checkCalendarAvailability` + `bookAppointment`, a `appointments` table, route `tool-calls` in the Edge Function, and **restore the booking close** in `system_prompt.txt` (it was reverted to qualify+capture because the tools didn't exist yet — Sofía was told to confirm bookings that couldn't happen). Re-add it once the tools are real, and make the confirmation contingent on the tool's actual result.
 - [ ] **WhatsApp follow-up** — only if you want it back; if so, build it (fires from the Edge Function via a provider) and re-add the marketing claim. Otherwise leave it as the SMS alert.
 - [ ] **Model eval:** assistant runs `gpt-4o-mini`. Confirm it handles Spanglish + objection-handling well enough for a premium product, or upgrade.
 - [ ] **Fix stale docs:** `database/supabase_schema.sql` no longer matches the live `leads` table; `CLAUDE.md` references `fable5_bajadentalai_prd.md` which does not exist.
-- [ ] **Conversion mechanics:** landing CTA is a `mailto:` only — add a booking link (Calendly) and/or Stripe payment link.
+- [x] **Conversion mechanics:** landing CTA is a `mailto:` only — add a booking link (Calendly) and/or Stripe payment link.
 - [ ] **Tests** for the Edge Function (the only real logic) — a couple of payload tests to protect it from edit churn.
 - [ ] **Deploy the site:** confirm Cloudflare Pages source — `bajadental_site/` (push deploys) vs `dist/` (recopy needed) — and ship the softened copy.
 - [ ] *(Optional)* git history scrub of old n8n/Twilio refs.

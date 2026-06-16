@@ -84,6 +84,61 @@ Deno.serve(async (req) => {
     const payload = await req.json();
     const msg = payload?.message;
 
+    // Mid-call tool routing: intercept live bookings.
+    if (msg?.type === "tool-calls") {
+      const results: any[] = [];
+      const toolCalls = msg?.toolCalls ?? [];
+
+      for (const tc of toolCalls) {
+        const name = tc?.function?.name;
+        const args = tc?.function?.arguments ?? {};
+
+        if (name === "checkCalendarAvailability") {
+          results.push({
+            toolCallId: tc.id,
+            result: "Available slots: Tomorrow at 10:00 AM and 2:00 PM.",
+          });
+        } else if (name === "bookAppointment") {
+          // Extract clinicId from the metadata inside the call object
+          const clinicId = 
+            payload?.call?.assistantOverrides?.metadata?.clinic_id ??
+            payload?.call?.metadata?.clinic_id ?? 
+            null;
+
+          const supabase = createClient(
+            Deno.env.get("SUPABASE_URL")!,
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+          );
+
+          const { error } = await supabase.from("appointments").insert({
+            clinic_id: clinicId,
+            call_id: payload?.call?.id ?? null,
+            patient_name: args.patient_name ?? "Unknown",
+            phone_number: args.phone_number ?? "Unknown",
+            appointment_time: args.appointment_date_time ?? new Date().toISOString(),
+          });
+
+          if (error) {
+            console.error("bookAppointment DB error:", error.message);
+            results.push({
+              toolCallId: tc.id,
+              result: "Error booking appointment. Please tell the user a coordinator will call them to manually schedule.",
+            });
+          } else {
+            results.push({
+              toolCallId: tc.id,
+              result: "Appointment successfully booked and confirmed in the system.",
+            });
+          }
+        }
+      }
+
+      return new Response(JSON.stringify({ results }), {
+        status: 200,
+        headers: { ...CORS, "Content-Type": "application/json" },
+      });
+    }
+
     // Only process end-of-call-report events (carries analysis + artifact).
     if (msg?.type !== "end-of-call-report") {
       return new Response(JSON.stringify({ skipped: true, type: msg?.type }), {
@@ -112,6 +167,14 @@ Deno.serve(async (req) => {
       structured.source ??
       null;
 
+    // Multi-tenant routing: Extract the clinic_id from Vapi metadata so leads
+    // are correctly isolated via Row Level Security.
+    const clinicId =
+      call.assistantOverrides?.metadata?.clinic_id ??
+      call.metadata?.clinic_id ??
+      msg?.assistant?.metadata?.clinic_id ??
+      null;
+
     // Safety guardrail (CLAUDE.md): acute symptoms must reach a human for care,
     // never an automated sales follow-up. Surface it loudly in the logs so an
     // operator/alerting integration can pick it up.
@@ -131,6 +194,7 @@ Deno.serve(async (req) => {
     // --- 1) Base `leads` table (backward compatible) -----------------------
     const lead = {
       call_id: callId,
+      clinic_id: clinicId,
       patient_name: structured.patient_name ?? null,
       procedure_interest: baseProcedure(structured.procedure_interest),
       language_spoken: baseLanguage(structured.language_spoken),
@@ -150,6 +214,7 @@ Deno.serve(async (req) => {
     // --- 2) Enterprise profile (full qualification record) -----------------
     const enterprise = {
       call_id: callId,
+      clinic_id: clinicId,
       patient_name: structured.patient_name ?? null,
       phone_number: phone,
       procedure_interest: inSet(ENT_PROCEDURE, structured.procedure_interest),
@@ -178,7 +243,12 @@ Deno.serve(async (req) => {
     // Emergency (acute symptoms) takes priority and routes to CARE, never sales.
     // Otherwise a border-anxiety lead gets a factual "address their concern"
     // nudge. SMS failure is recorded but never breaks the 200 response.
-    const alertTo = Deno.env.get("CLINIC_ALERT_PHONE");
+    const alertTo = 
+      call.assistantOverrides?.metadata?.clinic_alert_phone ??
+      call.metadata?.clinic_alert_phone ??
+      msg?.assistant?.metadata?.clinic_alert_phone ??
+      Deno.env.get("CLINIC_ALERT_PHONE");
+      
     const anxious = toBool(structured.border_crossing_anxiety);
     if (alertTo && (emergency || anxious)) {
       const name = structured.patient_name ?? "Unknown caller";

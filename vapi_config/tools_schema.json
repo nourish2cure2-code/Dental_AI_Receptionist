@@ -1,0 +1,74 @@
+[
+  {
+    "type": "function",
+    "messages": [
+      {
+        "type": "request-start",
+        "content": "Un momento, déjame revisar la agenda..."
+      },
+      {
+        "type": "request-complete",
+        "content": "Perfecto, ya revisé."
+      },
+      {
+        "type": "request-failed",
+        "content": "Disculpa, el sistema de citas está fallando un poco, pero no te preocupes, un asesor te llamará enseguida para agendar."
+      }
+    ],
+    "function": {
+      "name": "checkCalendarAvailability",
+      "description": "Call this tool when the user asks for available appointment times. Do NOT call this if the user hasn't explicitly asked for an appointment or a time to come in. This tool requires no arguments. It will return the next available slots.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    "async": false,
+    "server": {
+      "url": "https://gldxvazsoqxyfuxeursn.supabase.co/functions/v1/vapi-webhook"
+    }
+  },
+  {
+    "type": "function",
+    "messages": [
+      {
+        "type": "request-start",
+        "content": "Excelente, estoy agendando tu cita ahora mismo..."
+      },
+      {
+        "type": "request-complete",
+        "content": "¡Listo! Tu cita ha sido confirmada."
+      },
+      {
+        "type": "request-failed",
+        "content": "Hubo un pequeño error al guardar la cita, pero no te preocupes, te llamaremos para confirmarla manualmente."
+      }
+    ],
+    "function": {
+      "name": "bookAppointment",
+      "description": "Call this tool to finalize and book the appointment AFTER the user has agreed to a specific time slot.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "patient_name": {
+            "type": "string",
+            "description": "The full name of the patient."
+          },
+          "phone_number": {
+            "type": "string",
+            "description": "The phone number of the patient in E.164 format (+1...)."
+          },
+          "appointment_date_time": {
+            "type": "string",
+            "description": "The agreed upon appointment date and time in ISO 8601 format (e.g. 2026-06-20T10:00:00Z)."
+          }
+        },
+        "required": ["patient_name", "phone_number", "appointment_date_time"]
+      }
+    },
+    "async": false,
+    "server": {
+      "url": "https://gldxvazsoqxyfuxeursn.supabase.co/functions/v1/vapi-webhook"
+    }
+  }
+]
