@@ -1,1016 +1,273 @@
 <!DOCTYPE html>
-<html lang="es" translate="no">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google" content="notranslate">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
-    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
-    <title>Baja Dental AI — Recepcionista de Voz para Clínicas Premium</title>
-    <meta name="description" content="Recepcionista de voz con IA para clínicas dentales de alto volumen. Recepción de pacientes bilingüe 24/7, latencia menor a 800ms, entrega instantánea de leads al CRM.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after {
-            font-family: 'Inter', sans-serif;
-            border-radius: 0 !important;
-        }
-        html { scroll-behavior: smooth; }
-
-        @keyframes pulse-ring {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(0,176,255,0.45); }
-            60%       { box-shadow: 0 0 0 22px rgba(0,176,255,0); }
-        }
-        @keyframes pulse-ring-active {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(0,176,255,0.7); }
-            60%       { box-shadow: 0 0 0 34px rgba(0,176,255,0); }
-        }
-        @keyframes mic-wave {
-            0%, 100% { transform: scaleY(0.3); }
-            50%       { transform: scaleY(1); }
-        }
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
-        }
-        @keyframes grid-drift {
-            from { background-position: 0 0; }
-            to   { background-position: 44px 44px; }
-        }
-
-        .ring-idle   { animation: pulse-ring 2.5s ease-in-out infinite; }
-        .ring-active { animation: pulse-ring-active 1s ease-in-out infinite; }
-
-        .grid-bg {
-            background-image:
-                linear-gradient(rgba(250,250,250,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(250,250,250,0.04) 1px, transparent 1px);
-            background-size: 44px 44px;
-            animation: grid-drift 14s linear infinite;
-        }
-
-        .bar {
-            display: inline-block;
-            width: 4px;
-            background: #0F0F0F;
-            transform-origin: bottom;
-        }
-        .bar-1 { animation: mic-wave 0.7s ease-in-out infinite 0.00s; }
-        .bar-2 { animation: mic-wave 0.7s ease-in-out infinite 0.10s; }
-        .bar-3 { animation: mic-wave 0.7s ease-in-out infinite 0.20s; }
-        .bar-4 { animation: mic-wave 0.7s ease-in-out infinite 0.30s; }
-        .bar-5 { animation: mic-wave 0.7s ease-in-out infinite 0.20s; }
-
-        .connecting-spinner {
-            border: 2px solid rgba(15,15,15,0.2);
-            border-top-color: #0F0F0F;
-            animation: spin-slow 1s linear infinite;
-        }
-
-        /* ---- Hero logo showcase (full, unobstructed) ---- */
-        .logo-stage {
-            position: relative;
-            width: min(94vw, 88vh);   /* as large as fits fully in the viewport */
-            aspect-ratio: 1 / 1;
-            overflow: hidden;          /* keep the light streak on the logo */
-            isolation: isolate;        /* blend the streak with the logo, not the page */
-            /* feather the square edges so the icon dissolves into the page */
-            -webkit-mask:
-                linear-gradient(to right,  transparent 0, #000 8%, #000 92%, transparent 100%),
-                linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-            -webkit-mask-composite: source-in;
-                    mask:
-                linear-gradient(to right,  transparent 0, #000 8%, #000 92%, transparent 100%),
-                linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-                    mask-composite: intersect;
-        }
-        .logo-img {
-            position: absolute;
-            inset: 0;
-            background: url('images/bajadentalai_logo.webp') center / contain no-repeat;
-        }
-        .hero-float { animation: hero-float 9s ease-in-out infinite alternate; }
-        @keyframes hero-float {
-            from { transform: translateY(0)     scale(1);     }
-            to   { transform: translateY(-14px) scale(1.015); }
-        }
-
-        /* ambient breathing glow behind the orb */
-        @keyframes hero-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 0.9; } }
-        .hero-orb-glow { animation: hero-glow 6s ease-in-out infinite; }
-
-        /* cinematic light streak sweeping across the logo */
-        .logo-shine {
-            position: absolute;
-            top: -40%;
-            left: -65%;
-            width: 46%;
-            height: 180%;
-            pointer-events: none;
-            background: linear-gradient(90deg,
-                transparent          0%,
-                rgba(0,176,255,0)    24%,
-                rgba(0,176,255,0.35) 44%,
-                rgba(190,242,255,0.95) 50%,
-                rgba(0,176,255,0.35) 56%,
-                rgba(0,176,255,0)    76%,
-                transparent          100%);
-            filter: blur(7px);
-            mix-blend-mode: screen;
-            transform: translateX(0) rotate(20deg);
-            opacity: 0;
-            animation: logo-sweep 7s cubic-bezier(.42,0,.18,1) infinite;
-        }
-        @keyframes logo-sweep {
-            0%        { transform: translateX(0)    rotate(20deg); opacity: 0; }
-            7%        { opacity: 1; }
-            40%       { opacity: 1; }
-            52%, 100% { transform: translateX(330%) rotate(20deg); opacity: 0; }
-        }
-
-        .scroll-cue { transform: translateX(-50%); animation: scroll-bob 1.8s ease-in-out infinite; }
-        @keyframes scroll-bob {
-            0%, 100% { transform: translate(-50%, 0);   opacity: 0.45; }
-            50%      { transform: translate(-50%, 7px); opacity: 1; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .hero-float, .hero-orb-glow, .logo-shine, .scroll-cue { animation: none !important; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baja Dental AI — Saca tu consultorio de Facebook</title>
+  <meta name="description" content="Diseño web premium y recepcionista con inteligencia artificial bilingüe para consultorios dentales en Mexicali.">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/main.js" defer></script>
 </head>
-<body class="bg-[#0F0F0F]">
+<body>
 
-    <!-- NAV -->
-    <nav class="sticky top-0 z-50 bg-[#0F0F0F] border-b border-[#FAFAFA] border-opacity-[0.07] px-6 h-14 flex items-center justify-between">
-        <div class="flex items-center gap-2.5">
-            <img src="images/favicon-64.png" alt="" width="28" height="28" class="w-7 h-7" translate="no">
-            <span class="text-[#FAFAFA] font-black text-sm tracking-tight">BAJA DENTAL AI</span>
-        </div>
-        <div class="flex items-center gap-5 sm:gap-7">
-            <a href="#features" data-i18n="nav_features" class="hidden sm:inline text-[#FAFAFA] opacity-30 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity">Funciones</a>
-            <a href="#ledger" data-i18n="nav_ledger" class="hidden sm:inline text-[#FAFAFA] opacity-30 hover:opacity-100 text-xs font-bold uppercase tracking-widest transition-opacity">Balance</a>
 
-            <!-- Language toggle -->
-            <div class="flex items-center border border-[#FAFAFA] border-opacity-20" role="group" aria-label="Language">
-                <button type="button" data-lang="es" class="lang-btn px-2.5 py-1 text-[10px] font-black uppercase tracking-widest transition-colors bg-[#00B0FF] text-[#0F0F0F]">ES</button>
-                <button type="button" data-lang="en" class="lang-btn px-2.5 py-1 text-[10px] font-black uppercase tracking-widest transition-colors text-[#FAFAFA] opacity-40 border-l border-[#FAFAFA] border-opacity-20">EN</button>
-            </div>
 
-            <a href="#pilot" data-i18n="nav_pilot"
-               class="bg-[#00B0FF] text-[#0F0F0F] font-black text-xs uppercase tracking-widest px-5 py-2.5 hover:bg-[#FAFAFA] transition-colors">
-                Iniciar Piloto
-            </a>
-        </div>
-    </nav>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <!-- Using the original image from the previous site directory -->
+        <img src="images/bajadentalai_favicon.png" alt="Baja Dental AI Logo">
+        <span class="logo-text">Baja Dental AI</span>
+      </a>
+      
+      <button class="menu-toggle" aria-label="Menu">&#9776;</button>
 
-    <!-- ============================================================= -->
-    <!-- 1. HERO — full logo showcase (parallax + cinematic sweep)     -->
-    <!-- ============================================================= -->
-    <section class="relative overflow-hidden bg-[#02080e] min-h-[calc(100vh-3.5rem)] flex flex-col items-center justify-center">
-
-        <!-- ambient radial glow behind the orb -->
-        <div class="hero-orb-glow absolute inset-0 pointer-events-none"
-             style="background: radial-gradient(58% 48% at 50% 44%, rgba(0,176,255,0.16) 0%, rgba(0,176,255,0.05) 38%, rgba(15,15,15,0) 70%);"></div>
-
-        <!-- Parallax logo stage — full icon, unobstructed -->
-        <div id="hero-parallax" class="relative z-10 will-change-transform">
-            <div class="logo-stage hero-float">
-                <div class="logo-img"></div>
-                <div class="logo-shine" aria-hidden="true"></div>
-            </div>
+      <div class="nav-links">
+        <a href="index.html#solution" class="nav-link" data-i18n="nav_solution">Solución</a>
+        <a href="recepcionista-ia.html" class="nav-link" data-i18n="nav_ai">Recepcionista IA</a>
+        <a href="paquetes.html" class="nav-link" data-i18n="nav_pricing">Paquetes</a>
+        <a href="nosotros.html" class="nav-link" data-i18n="nav_about">Nosotros</a>
+        
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
         </div>
 
-        <!-- soft fade into the section below -->
-        <div class="absolute inset-x-0 bottom-0 h-40 pointer-events-none"
-             style="background: linear-gradient(180deg, rgba(15,15,15,0) 0%, #0F0F0F 100%);"></div>
+        <a href="contacto.html" class="btn btn-primary" data-i18n="nav_demo">Agenda una demo</a>
+      </div>
+    </div>
+  </nav>
 
-        <!-- Scroll cue -->
-        <a href="#headline" aria-label="Scroll"
-           class="scroll-cue absolute bottom-6 left-1/2 z-10 text-[#FAFAFA] opacity-50 hover:opacity-100 transition-opacity">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="square" stroke-width="2" d="M12 5v14M6 13l6 6 6-6"/>
-            </svg>
+  <!-- 5.1 Hero -->
+  <header class="section section-deep relative" style="min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-top: calc(var(--nav-height) + 40px); overflow: hidden;">
+    <div class="accent-glow animate-glow" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px;"></div>
+    
+    <!-- Parallax logo stage -->
+    <div id="hero-parallax" class="will-change-transform" style="position: absolute; inset: 0;">
+        <div class="logo-stage hero-float">
+            <div class="logo-img"></div>
+            <div class="logo-shine" aria-hidden="true"></div>
+        </div>
+    </div>
+    
+    <div class="container relative z-10 fade-in-up">
+      <h1 data-i18n="hero_h1" style="max-width: 900px; margin: 0 auto 24px;">Saca tu consultorio de Facebook y ponlo a trabajar 24/7.</h1>
+      <p data-i18n="hero_sub" style="font-size: 1.25rem; max-width: 600px; margin: 0 auto 40px; color: var(--text-secondary);">Sitio web profesional + recepcionista con IA que agenda pacientes mientras duermes. Hecho para dentistas de Mexicali.</p>
+      
+      <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+        <a href="contacto.html" class="btn btn-primary" data-i18n="hero_cta1">Reclama tu código de fundador</a>
+        <a href="paquetes.html" class="btn btn-outline" data-i18n="hero_cta2">Ver paquetes</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 5.2 Trust Bar -->
+  <div style="border-top: 1px solid var(--border-hairline); border-bottom: 1px solid var(--border-hairline); background: var(--bg-base); padding: 16px 0;">
+    <div class="container" style="display: flex; justify-content: space-between; flex-wrap: wrap; text-transform: uppercase; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-muted); text-align: center; gap: 16px;">
+      <span data-i18n="trust_1">Hecho para Mexicali</span>
+      <span style="color: var(--primary-cyan);">·</span>
+      <span data-i18n="trust_2">Bilingüe Español/Inglés</span>
+      <span style="color: var(--primary-cyan);">·</span>
+      <span data-i18n="trust_3">Listo para pacientes de EE.UU.</span>
+      <span style="color: var(--primary-cyan);">·</span>
+      <span data-i18n="trust_4">Sin dominio propio requerido</span>
+    </div>
+  </div>
+
+  <!-- 5.3 Problem / Agitation -->
+  <section class="section">
+    <div class="container">
+      <h2 class="text-center mb-8 fade-in-up" data-i18n="problem_h2" style="max-width: 700px; margin-left: auto; margin-right: auto;">¿Tu consultorio vive en una página de Facebook?</h2>
+      
+      <div class="grid grid-cols-2 mt-8 fade-in-up" style="animation-delay: 0.2s;">
+        <div class="glass-panel" style="display: flex; align-items: flex-start; gap: 16px;">
+          <div style="color: var(--primary-cyan); font-size: 24px;">✕</div>
+          <p data-i18n="pain_1" style="margin: 0;">Los pacientes te buscan en Google y no te encuentran.</p>
+        </div>
+        <div class="glass-panel" style="display: flex; align-items: flex-start; gap: 16px;">
+          <div style="color: var(--primary-cyan); font-size: 24px;">✕</div>
+          <p data-i18n="pain_2" style="margin: 0;">Los mensajes se quedan sin responder y pierdes citas.</p>
+        </div>
+        <div class="glass-panel" style="display: flex; align-items: flex-start; gap: 16px;">
+          <div style="color: var(--primary-cyan); font-size: 24px;">✕</div>
+          <p data-i18n="pain_3" style="margin: 0;">Una página social no proyecta el profesionalismo de tu trabajo.</p>
+        </div>
+        <div class="glass-panel" style="display: flex; align-items: flex-start; gap: 16px;">
+          <div style="color: var(--primary-cyan); font-size: 24px;">✕</div>
+          <p data-i18n="pain_4" style="margin: 0;">Tu competencia ya tiene sitio propio.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5.4 Solution / How it works -->
+  <section id="solution" class="section section-deep relative">
+    <div class="accent-glow" style="top: 0; right: 0;"></div>
+    <div class="container relative z-10 fade-in-up">
+      <h2 class="text-center mb-8" data-i18n="solution_h2">Tu presencia digital, lista en días — no en meses.</h2>
+      
+      <div class="grid grid-cols-3 mt-8">
+        <div class="glass-panel text-center">
+          <div style="font-family: var(--font-heading); font-size: 48px; font-weight: 800; color: var(--primary-cyan); opacity: 0.2; position: absolute; top: 16px; right: 24px;">01</div>
+          <h3 data-i18n="step1_title" style="margin-top: 24px;">Construimos tu sitio</h3>
+          <p data-i18n="step1_desc">Diseño premium, responsivo, listo para pacientes.</p>
+        </div>
+        <div class="glass-panel text-center">
+          <div style="font-family: var(--font-heading); font-size: 48px; font-weight: 800; color: var(--primary-cyan); opacity: 0.2; position: absolute; top: 16px; right: 24px;">02</div>
+          <h3 data-i18n="step2_title" style="margin-top: 24px;">Activamos tu recepcionista</h3>
+          <p data-i18n="step2_desc">Responde, agenda y filtra 24/7, en español e inglés.</p>
+        </div>
+        <div class="glass-panel text-center">
+          <div style="font-family: var(--font-heading); font-size: 48px; font-weight: 800; color: var(--primary-cyan); opacity: 0.2; position: absolute; top: 16px; right: 24px;">03</div>
+          <h3 data-i18n="step3_title" style="margin-top: 24px;">Atraemos pacientes</h3>
+          <p data-i18n="step3_desc">SEO local, WhatsApp y redes que llenan tu agenda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5.6 AI Receptionist Spotlight -->
+  <section class="section relative" style="border-top: 1px solid var(--primary-cyan); background: linear-gradient(180deg, rgba(43,212,232,0.05) 0%, var(--bg-base) 100%);">
+    <div class="container fade-in-up text-center">
+      <h2 data-i18n="ai_spotlight_h2" class="text-cyan mb-4">Nunca pierdas otra llamada ni mensaje.</h2>
+      <p data-i18n="ai_spotlight_desc" style="max-width: 800px; margin: 0 auto 32px; font-size: 1.125rem;">Tu recepcionista con IA contesta 24/7 en español e inglés, agenda citas, responde preguntas frecuentes y captura pacientes de EE.UU. fuera de horario — para que tú te dediques a la odontología.</p>
+      
+      <div style="margin-bottom: 40px; border-radius: var(--radius-lg); border: 1px solid var(--border-hairline); background: var(--surface-cards); display: inline-block; padding: 24px; max-width: 400px; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <!-- Fake Chat -->
+        <div style="background: var(--bg-deep); border-radius: 12px; padding: 12px; margin-bottom: 12px; border-left: 3px solid var(--primary-cyan);">
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 4px;">IA • 2:15 PM</p>
+          <p style="font-size: 14px; color: var(--text-primary); margin: 0;">Baja Dental, buenas tardes. ¿Busca agendar consulta o tiene alguna urgencia?</p>
+        </div>
+        <div style="background: rgba(43,212,232,0.1); border-radius: 12px; padding: 12px; text-align: right;">
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 4px;">Paciente • 2:16 PM</p>
+          <p style="font-size: 14px; color: var(--primary-cyan); margin: 0;">Hi, I need a quote for an implant.</p>
+        </div>
+      </div>
+      <br>
+      <a href="recepcionista-ia.html" class="btn btn-primary" data-i18n="ai_spotlight_cta">Conoce la Recepcionista IA</a>
+    </div>
+  </section>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/521234567890" class="floating-wa" aria-label="WhatsApp" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+  </a>
+
+  <!-- Footer -->
+  <footer class="section section-deep" style="border-top: 1px solid var(--border-hairline); padding-bottom: 40px;">
+    <div class="container grid grid-cols-4">
+      <div>
+        <a href="index.html" class="logo mb-4">
+          <span class="logo-text">Baja Dental AI</span>
         </a>
-    </section>
-
-    <!-- ============================================================= -->
-    <!-- 1b. HEADLINE + VOICE CTA (moved out from over the logo)       -->
-    <!-- ============================================================= -->
-    <section id="headline" class="relative bg-[#0F0F0F] border-b border-[#FAFAFA] border-opacity-[0.07]">
-        <div class="relative z-10 w-full max-w-3xl mx-auto px-6 pt-10 pb-24 text-center">
-            <div class="flex items-center justify-center gap-2 mb-8">
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-                <span data-i18n="hero_eyebrow" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">
-                    Recepción con IA de Voz · Clínicas Fronterizas de Mexicali
-                </span>
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-            </div>
-
-            <h1 data-i18n-html="hero_h1" class="text-[#FAFAFA] font-black uppercase leading-[0.92] tracking-tight text-5xl md:text-6xl lg:text-7xl mb-7">
-                Cada llamada perdida<br>
-                es un implante de <span class="text-[#00B0FF]">$6,000</span><br>
-                que se va.
-            </h1>
-
-            <p data-i18n="hero_p" class="text-[#FAFAFA] opacity-70 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-10">
-                Las clínicas premium no pierden pacientes con la competencia — los pierden con el buzón
-                de voz. Baja Dental AI contesta cada lead entrante en menos de un segundo, en español e
-                inglés con fluidez, califica al paciente, registra el lead enriquecido en tu CRM y le
-                avisa a tu equipo por mensaje al instante. Cero ingresos perdidos. Cero carga para recepción.
-            </p>
-
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
-                <!-- PRIMARY: Vapi voice activation -->
-                <button id="vapi-demo-trigger"
-                        class="ring-idle group bg-[#00B0FF] text-[#0F0F0F] font-black text-sm uppercase tracking-widest px-9 py-5 hover:bg-[#FAFAFA] transition-colors flex items-center gap-4">
-                    <!-- Idle mic -->
-                    <svg id="hero-icon-idle" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.41 2.72 6.23 6 6.72V21h2v-2.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-                    </svg>
-                    <!-- Connecting spinner -->
-                    <span id="hero-icon-connecting" class="connecting-spinner hidden w-5 h-5"></span>
-                    <!-- Active waveform -->
-                    <span id="hero-icon-active" class="hidden items-end gap-[3px] h-5">
-                        <span class="bar bar-1 h-5"></span>
-                        <span class="bar bar-2 h-5"></span>
-                        <span class="bar bar-3 h-5"></span>
-                        <span class="bar bar-4 h-5"></span>
-                        <span class="bar bar-5 h-5"></span>
-                    </span>
-                    <span id="hero-btn-label">Habla con la Recepcionista</span>
-                </button>
-            </div>
-
-            <p id="hero-status" class="mt-6 text-[#FAFAFA] opacity-40 text-[11px] uppercase tracking-[0.25em]">
-                En vivo en el navegador · Permite el micrófono para empezar
-            </p>
+        <p style="font-size: 14px;">Llevamos la odontología de Mexicali al futuro digital.</p>
+      </div>
+      <div>
+        <h4 style="color: var(--text-primary); font-size: 14px;">Producto</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+          <a href="paquetes.html" data-i18n="ft_web">Sitios Web</a>
+          <a href="recepcionista-ia.html" data-i18n="ft_ai">Recepcionista IA</a>
         </div>
-    </section>
-
-    <!-- Stats strip -->
-    <section class="bg-[#0F0F0F] border-b border-[#FAFAFA] border-opacity-[0.07]">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-2 lg:grid-cols-4 border-t border-l border-[#FAFAFA] border-opacity-10">
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-7">
-                    <div class="text-[#00B0FF] font-black text-4xl leading-none mb-2">37%</div>
-                    <div data-i18n="stat_1" class="text-[#FAFAFA] opacity-40 text-[10px] uppercase tracking-widest leading-relaxed">De las llamadas entrantes quedan sin contestar en horas pico</div>
-                </div>
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-7">
-                    <div class="text-[#00B0FF] font-black text-4xl leading-none mb-2">&lt;800<span class="text-lg">ms</span></div>
-                    <div data-i18n="stat_2" class="text-[#FAFAFA] opacity-40 text-[10px] uppercase tracking-widest leading-relaxed">Latencia de respuesta, indistinguible de un humano</div>
-                </div>
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-7">
-                    <div class="text-[#00B0FF] font-black text-4xl leading-none mb-2">24/7</div>
-                    <div data-i18n="stat_3" class="text-[#FAFAFA] opacity-40 text-[10px] uppercase tracking-widest leading-relaxed">Cobertura sin incapacidades ni huecos de turno</div>
-                </div>
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-7">
-                    <div class="text-[#00B0FF] font-black text-4xl leading-none mb-2">0</div>
-                    <div data-i18n="stat_4" class="text-[#FAFAFA] opacity-40 text-[10px] uppercase tracking-widest leading-relaxed">Leads perdidos entre la llamada y tu CRM</div>
-                </div>
-            </div>
+      </div>
+      <div>
+        <h4 style="color: var(--text-primary); font-size: 14px;">Empresa</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+          <a href="nosotros.html" data-i18n="ft_about">Nosotros</a>
+          <a href="contacto.html" data-i18n="ft_contact">Contacto</a>
+          <a href="aviso-de-privacidad.html" data-i18n="ft_privacy">Aviso de Privacidad</a>
         </div>
-    </section>
-
-    <!-- ============================================================= -->
-    <!-- 2. CORE FEATURES MATRIX                                       -->
-    <!-- ============================================================= -->
-    <section id="features" class="bg-[#0F0F0F] border-b border-[#FAFAFA] border-opacity-[0.07]">
-        <div class="max-w-6xl mx-auto px-6 py-24">
-
-            <div class="flex items-center gap-2 mb-5">
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-                <span data-i18n="feat_eyebrow" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Capacidades Clave</span>
-            </div>
-            <h2 data-i18n="feat_h2" class="text-[#FAFAFA] font-black uppercase tracking-tight text-3xl md:text-5xl leading-none mb-16 max-w-3xl">
-                Una recepcionista diseñada para nunca perder un lead.
-            </h2>
-
-            <!-- Matrix -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 border-t border-l border-[#FAFAFA] border-opacity-10">
-
-                <!-- 24/7/365 -->
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-8 hover:bg-[#FAFAFA] hover:bg-opacity-[0.02] transition-colors group">
-                    <div class="flex items-center justify-between mb-8">
-                        <span class="text-[#FAFAFA] opacity-20 font-black text-sm tracking-widest">01</span>
-                        <svg class="w-7 h-7 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                            <path stroke-linecap="square" stroke-width="2" d="M12 7v5l3 3"/>
-                        </svg>
-                    </div>
-                    <h3 data-i18n-html="feat1_title" class="text-[#FAFAFA] font-black uppercase text-lg tracking-tight leading-tight mb-3">Disponibilidad<br>24 / 7 / 365</h3>
-                    <p data-i18n="feat1_body" class="text-[#FAFAFA] opacity-40 text-sm leading-relaxed">
-                        Contesta a las 2 AM, en días festivos, en plena hora de comida. Sin huecos de turno,
-                        sin música de espera, sin «llame en horario de oficina».
-                    </p>
-                </div>
-
-                <!-- Spanglish -->
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-8 hover:bg-[#FAFAFA] hover:bg-opacity-[0.02] transition-colors group">
-                    <div class="flex items-center justify-between mb-8">
-                        <span class="text-[#FAFAFA] opacity-20 font-black text-sm tracking-widest">02</span>
-                        <svg class="w-7 h-7 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="square" stroke-width="2" d="M3 5h12M9 3v2m1.5 0c0 5-3.5 9-7.5 11M7 9c0 3 2.5 5.5 6 7"/>
-                            <path stroke-linecap="square" stroke-width="2" d="M14 21l4-9 4 9m-6.5-2h5"/>
-                        </svg>
-                    </div>
-                    <h3 data-i18n-html="feat2_title" class="text-[#FAFAFA] font-black uppercase text-lg tracking-tight leading-tight mb-3">Spanglish<br>con Fluidez</h3>
-                    <p data-i18n="feat2_body" class="text-[#FAFAFA] opacity-40 text-sm leading-relaxed">
-                        Español del norte de México e inglés limpio de EE. UU. — alternando a media frase
-                        como de verdad hablan tus pacientes de la frontera. Sin menús, sin pedir idioma.
-                    </p>
-                </div>
-
-                <!-- Latency -->
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-8 hover:bg-[#FAFAFA] hover:bg-opacity-[0.02] transition-colors group">
-                    <div class="flex items-center justify-between mb-8">
-                        <span class="text-[#FAFAFA] opacity-20 font-black text-sm tracking-widest">03</span>
-                        <svg class="w-7 h-7 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="square" stroke-width="2" d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/>
-                        </svg>
-                    </div>
-                    <h3 data-i18n-html="feat3_title" class="text-[#FAFAFA] font-black uppercase text-lg tracking-tight leading-tight mb-3">Latencia<br>Menor a 800ms</h3>
-                    <p data-i18n="feat3_body" class="text-[#FAFAFA] opacity-40 text-sm leading-relaxed">
-                        Responde en menos de 800 milisegundos — por debajo del umbral que un paciente puede
-                        percibir. Las conversaciones se sienten humanas, no robóticas.
-                    </p>
-                </div>
-
-                <!-- CRM delivery -->
-                <div class="border-b border-r border-[#FAFAFA] border-opacity-10 p-8 hover:bg-[#FAFAFA] hover:bg-opacity-[0.02] transition-colors group">
-                    <div class="flex items-center justify-between mb-8">
-                        <span class="text-[#FAFAFA] opacity-20 font-black text-sm tracking-widest">04</span>
-                        <svg class="w-7 h-7 text-[#00B0FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="square" stroke-width="2" d="M4 4h16v6H4zM4 14h16v6H4z"/>
-                            <path stroke-linecap="square" stroke-width="2" d="M8 7h.01M8 17h.01"/>
-                        </svg>
-                    </div>
-                    <h3 data-i18n-html="feat4_title" class="text-[#FAFAFA] font-black uppercase text-lg tracking-tight leading-tight mb-3">Leads al CRM<br>al Instante</h3>
-                    <p data-i18n="feat4_body" class="text-[#FAFAFA] opacity-40 text-sm leading-relaxed">
-                        Nombre, procedimiento de interés, idioma y ventana de retorno, estructurados y
-                        enviados a tu CRM en cuanto termina la llamada. Tu equipo da seguimiento en
-                        caliente, no en frío.
-                    </p>
-                </div>
-            </div>
+      </div>
+      <div>
+        <h4 style="color: var(--text-primary); font-size: 14px;">Contacto</h4>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+          <a href="mailto:hola@bajadentalai.com">hola@bajadentalai.com</a>
+          <span>+52 (686) 123 4567</span>
         </div>
-    </section>
-
-    <!-- ============================================================= -->
-    <!-- 2B. OMNICHANNEL ECOSYSTEM                                     -->
-    <!-- ============================================================= -->
-    <section id="omnichannel" class="bg-[#02080e] border-b border-[#FAFAFA] border-opacity-[0.07] relative overflow-hidden">
-        <!-- ambient glow -->
-        <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(circle at 50% 0%, rgba(0,176,255,0.08) 0%, transparent 70%);"></div>
-        <div class="max-w-6xl mx-auto px-6 py-24 relative z-10">
-
-            <div class="flex items-center gap-2 mb-5">
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-                <span data-i18n="omni_eyebrow" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Ecosistema Omnicanal</span>
-            </div>
-            <h2 data-i18n-html="omni_h2" class="text-[#FAFAFA] font-black uppercase tracking-tight text-3xl md:text-5xl leading-none mb-16 max-w-3xl">
-                El trabajo no termina<br>cuando cuelgas el teléfono.
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
-                <!-- Instant SMS Alert -->
-                <div class="border border-[#FAFAFA] border-opacity-10 bg-[#0F0F0F] p-8 md:p-10 hover:border-opacity-30 transition-colors">
-                    <svg class="w-8 h-8 text-[#00B0FF] mb-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
-                    </svg>
-                    <h3 data-i18n-html="omni_w_title" class="text-[#FAFAFA] font-black uppercase text-xl tracking-tight leading-tight mb-4">Alerta Instantánea<br>de Lead por SMS</h3>
-                    <p data-i18n="omni_w_body" class="text-[#FAFAFA] opacity-50 text-sm leading-relaxed mb-6">
-                        En el instante en que la IA cuelga, le envía a tu equipo un mensaje de texto con el lead calificado — nombre, procedimiento, presupuesto, tiempo y cualquier inquietud sobre la frontera — para que llamen de vuelta mientras el paciente sigue decidiendo. La rapidez gana el caso.
-                    </p>
-                </div>
-
-                <!-- CRM Integration -->
-                <div class="border border-[#FAFAFA] border-opacity-10 bg-[#0F0F0F] p-8 md:p-10 hover:border-opacity-30 transition-colors">
-                    <svg class="w-8 h-8 text-[#00B0FF] mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="square" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                    </svg>
-                    <h3 data-i18n-html="omni_c_title" class="text-[#FAFAFA] font-black uppercase text-xl tracking-tight leading-tight mb-4">Integración Nativa<br>con tu CRM</h3>
-                    <p data-i18n="omni_c_body" class="text-[#FAFAFA] opacity-50 text-sm leading-relaxed mb-6">
-                        No necesitas cambiar tu ecosistema actual. La IA actúa como tu SDR digital, registrando silenciosamente cada lead enriquecido (nombre, procedimiento de interés, presupuesto, urgencia, idioma y un resumen completo de la llamada) en una base de datos segura y consultable que tu equipo usa desde el primer día, lista para exportar a GoHighLevel, HubSpot o Pipedrive.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================= -->
-    <!-- 3. FRICTION LEDGER SECTION  (inverted for max contrast)       -->
-    <!-- ============================================================= -->
-    <section id="ledger" class="bg-[#FAFAFA] border-b border-[#0F0F0F] border-opacity-10">
-        <div class="max-w-6xl mx-auto px-6 py-24">
-
-            <div class="flex items-center gap-2 mb-5">
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-                <span data-i18n="led_eyebrow" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">El Balance de Fricción</span>
-            </div>
-            <h2 data-i18n="led_h2" class="text-[#0F0F0F] font-black uppercase tracking-tight text-3xl md:text-5xl leading-none mb-16 max-w-3xl">
-                Recepción tradicional vs. activación instantánea.
-            </h2>
-
-            <!-- Comparison table -->
-            <div class="border border-[#0F0F0F] border-opacity-15">
-                <!-- Header row -->
-                <div class="grid grid-cols-12 bg-[#0F0F0F]">
-                    <div class="col-span-12 md:col-span-4 p-5">
-                        <span data-i18n="led_col1" class="text-[#FAFAFA] opacity-40 text-[10px] font-black uppercase tracking-[0.3em]">Punto de Fricción</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-5 border-l border-[#FAFAFA] border-opacity-10">
-                        <span data-i18n="led_col2" class="text-[#FAFAFA] opacity-50 text-[10px] font-black uppercase tracking-[0.3em]">Recepción Tradicional</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-5 border-l border-[#00B0FF] bg-[#00B0FF] bg-opacity-10">
-                        <span class="text-[#00B0FF] text-[10px] font-black uppercase tracking-[0.3em]">Baja Dental AI</span>
-                    </div>
-                </div>
-
-                <!-- Row: Technical overhead -->
-                <div class="grid grid-cols-12 border-t border-[#0F0F0F] border-opacity-10">
-                    <div class="col-span-12 md:col-span-4 p-6">
-                        <span data-i18n="led_r1_label" class="text-[#0F0F0F] font-black uppercase text-sm tracking-tight">Carga Técnica</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 flex items-start gap-3">
-                        <span class="text-[#0F0F0F] opacity-30 font-black mt-px">✕</span>
-                        <span data-i18n="led_r1_trad" class="text-[#0F0F0F] opacity-60 text-sm leading-relaxed">Hardware PBX, troncales SIP, técnico de TI y capacitación del personal.</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 bg-[#00B0FF] bg-opacity-[0.06] flex items-start gap-3">
-                        <span class="text-[#00B0FF] font-black mt-px">✓</span>
-                        <span data-i18n="led_r1_ai" class="text-[#0F0F0F] text-sm leading-relaxed font-semibold">Cero. Apuntamos tu número actual a la IA. Sin hardware.</span>
-                    </div>
-                </div>
-
-                <!-- Row: Compliance -->
-                <div class="grid grid-cols-12 border-t border-[#0F0F0F] border-opacity-10">
-                    <div class="col-span-12 md:col-span-4 p-6">
-                        <span data-i18n="led_r2_label" class="text-[#0F0F0F] font-black uppercase text-sm tracking-tight">Cumplimiento y Audio</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 flex items-start gap-3">
-                        <span class="text-[#0F0F0F] opacity-30 font-black mt-px">✕</span>
-                        <span data-i18n="led_r2_trad" class="text-[#0F0F0F] opacity-60 text-sm leading-relaxed">Guiones de consentimiento manuales; grabaciones guardadas sin orden ni verificación.</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 bg-[#00B0FF] bg-opacity-[0.06] flex items-start gap-3">
-                        <span class="text-[#00B0FF] font-black mt-px">✓</span>
-                        <span data-i18n="led_r2_ai" class="text-[#0F0F0F] text-sm leading-relaxed font-semibold">Consentimiento y captura de audio conforme a la LFPDPPP, configurados desde el inicio.</span>
-                    </div>
-                </div>
-
-                <!-- Row: Deployment -->
-                <div class="grid grid-cols-12 border-t border-[#0F0F0F] border-opacity-10">
-                    <div class="col-span-12 md:col-span-4 p-6">
-                        <span data-i18n="led_r3_label" class="text-[#0F0F0F] font-black uppercase text-sm tracking-tight">Tiempo de Implementación</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 flex items-start gap-3">
-                        <span class="text-[#0F0F0F] opacity-30 font-black mt-px">✕</span>
-                        <span data-i18n="led_r3_trad" class="text-[#0F0F0F] opacity-60 text-sm leading-relaxed">Semanas de contratación, capacitación y armado de turnos.</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 bg-[#00B0FF] bg-opacity-[0.06] flex items-start gap-3">
-                        <span class="text-[#00B0FF] font-black mt-px">✓</span>
-                        <span data-i18n="led_r3_ai" class="text-[#0F0F0F] text-sm leading-relaxed font-semibold">En vivo en 48 horas. Implementación instantánea, sin ciclo de reclutamiento.</span>
-                    </div>
-                </div>
-
-                <!-- Row: ROI -->
-                <div class="grid grid-cols-12 border-t border-[#0F0F0F] border-opacity-10">
-                    <div class="col-span-12 md:col-span-4 p-6">
-                        <span data-i18n="led_r4_label" class="text-[#0F0F0F] font-black uppercase text-sm tracking-tight">Retorno de Inversión</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 flex items-start gap-3">
-                        <span class="text-[#0F0F0F] opacity-30 font-black mt-px">✕</span>
-                        <span data-i18n="led_r4_trad" class="text-[#0F0F0F] opacity-60 text-sm leading-relaxed">Sueldo fijo + prestaciones sin importar cuántos leads conviertan.</span>
-                    </div>
-                    <div class="col-span-6 md:col-span-4 p-6 border-l border-[#0F0F0F] border-opacity-10 bg-[#00B0FF] bg-opacity-[0.06] flex items-start gap-3">
-                        <span class="text-[#00B0FF] font-black mt-px">✓</span>
-                        <span data-i18n="led_r4_ai" class="text-[#0F0F0F] text-sm leading-relaxed font-semibold">Un solo lead de implante recuperado paga el mes. ROI inmediato.</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================= -->
-    <!-- PRICING TIERS                                                 -->
-    <!-- ============================================================= -->
-    <section id="pricing" class="relative bg-[#0A0A0A] py-24 px-6 border-y border-[#FAFAFA] border-opacity-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 data-i18n="pricing_h2" class="text-[#FAFAFA] font-black uppercase tracking-tight text-3xl md:text-5xl mb-4">Planes y Precios</h2>
-                <p data-i18n="pricing_p" class="text-[#FAFAFA] opacity-50 max-w-2xl mx-auto mb-6">Selecciona el nivel de automatización que tu clínica necesita.</p>
-                <div class="inline-flex items-center gap-3 bg-[#00B0FF] bg-opacity-10 border border-[#00B0FF] border-opacity-30 px-6 py-3 rounded-sm">
-                    <span data-i18n="pricing_promo_title" class="text-[#00B0FF] font-black uppercase tracking-wider text-sm">Promo de Junio:</span>
-                    <span data-i18n="pricing_promo_body" class="text-[#FAFAFA] text-sm font-medium">Ahorra $199 USD (Setup Gratis) en todos los planes.</span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Tier 1 -->
-                <div class="bg-[#0F0F0F] border border-[#00B0FF] border-opacity-50 p-8 relative flex flex-col">
-                    <div data-i18n="pricing_june_tag" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#00B0FF] text-[#0F0F0F] text-[10px] font-black tracking-widest uppercase px-3 py-1">
-                        Especial de Junio
-                    </div>
-                    <h3 class="text-[#FAFAFA] font-black text-2xl uppercase tracking-wider mb-2">Essential</h3>
-                    <div class="flex items-end gap-1 mb-6">
-                        <span class="text-[#00B0FF] text-4xl font-black">$249</span>
-                        <span data-i18n="pricing_mo" class="text-[#FAFAFA] opacity-40 text-sm">/ mes</span>
-                    </div>
-                    <ul class="text-[#FAFAFA] opacity-70 space-y-4 mb-8 flex-1">
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#00B0FF] mt-1">✓</span>
-                            <span data-i18n="pricing_t1_f1">800 Minutos de Voz IA</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#00B0FF] mt-1">✓</span>
-                            <span data-i18n="pricing_t1_f2">IA Bilingüe 24/7 (Inglés/Español)</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#00B0FF] mt-1">✓</span>
-                            <span data-i18n="pricing_t1_f3">Alerta SMS instantánea al cerrador</span>
-                        </li>
-                        <li class="flex items-start gap-3 mt-4 pt-4 border-t border-[#FAFAFA] border-opacity-10">
-                            <span class="text-[#00B0FF] font-bold mt-1">+</span>
-                            <span data-i18n="pricing_t1_promo" class="text-[#FAFAFA] font-bold text-sm">Promo Junio: Incluye Protección de Asistencia y SMS de Recuperación (gratis de por vida).</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Tier 2 -->
-                <div class="bg-[#0F0F0F] border border-[#FAFAFA] border-opacity-10 p-8 flex flex-col">
-                    <h3 class="text-[#FAFAFA] font-black text-2xl uppercase tracking-wider mb-2">Accelerator</h3>
-                    <div class="flex items-end gap-1 mb-6">
-                        <span class="text-[#FAFAFA] text-4xl font-black">$349</span>
-                        <span data-i18n="pricing_mo" class="text-[#FAFAFA] opacity-40 text-sm">/ mes</span>
-                    </div>
-                    <ul class="text-[#FAFAFA] opacity-70 space-y-4 mb-8 flex-1">
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#FAFAFA] opacity-40 mt-1">✓</span>
-                            <span data-i18n="pricing_t2_f1">1,200 Minutos de Voz IA</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#FAFAFA] opacity-40 mt-1">✓</span>
-                            <span data-i18n="pricing_t2_f2">Protección de Asistencia (SMS recordatorio 24h y 1h antes)</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#FAFAFA] opacity-40 mt-1">✓</span>
-                            <span data-i18n="pricing_t2_f3">Campañas de Recuperación (SMS de seguimiento a pacientes no cerrados)</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Tier 3 -->
-                <div class="bg-[#0F0F0F] border border-[#FAFAFA] border-opacity-10 p-8 flex flex-col">
-                    <h3 class="text-[#FAFAFA] font-black text-2xl uppercase tracking-wider mb-2">Enterprise</h3>
-                    <div class="flex items-end gap-1 mb-6">
-                        <span class="text-[#FAFAFA] text-4xl font-black">$499</span>
-                        <span data-i18n="pricing_mo" class="text-[#FAFAFA] opacity-40 text-sm">/ mes</span>
-                    </div>
-                    <ul class="text-[#FAFAFA] opacity-70 space-y-4 mb-8 flex-1">
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#FAFAFA] opacity-40 mt-1">✓</span>
-                            <span data-i18n="pricing_t3_f1">2,000 Minutos de Voz IA</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#FAFAFA] opacity-40 mt-1">✓</span>
-                            <span data-i18n="pricing_t3_f2">Todo lo de Accelerator</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <span class="text-[#FAFAFA] opacity-40 mt-1">✓</span>
-                            <span data-i18n="pricing_t3_f3">Sincronización Nativa con CRM/EHR (GoHighLevel, OpenDental, etc.)</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================= -->
-    <!-- PILOT CTA  (anchor referenced by demo.html#pilot)             -->
-    <!-- ============================================================= -->
-    <section id="pilot" class="relative overflow-hidden bg-[#0F0F0F]">
-        <div class="absolute inset-0 grid-bg pointer-events-none"></div>
-        <div class="relative max-w-3xl mx-auto px-6 py-28 text-center">
-            <div class="flex items-center justify-center gap-2 mb-8">
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-                <span data-i18n="pilot_eyebrow" class="text-[#00B0FF] text-[10px] font-black tracking-[0.45em] uppercase">Implementación en 48 Horas</span>
-                <div class="w-6 h-px bg-[#00B0FF]"></div>
-            </div>
-            <h2 data-i18n-html="pilot_h2" class="text-[#FAFAFA] font-black uppercase tracking-tight text-4xl md:text-6xl leading-none mb-7">
-                Deja de pagarle al buzón<br>por perder a tus pacientes.
-            </h2>
-            <p data-i18n="pilot_p" class="text-[#FAFAFA] opacity-50 text-base md:text-lg max-w-xl mx-auto leading-relaxed mb-12">
-                Haz un piloto en vivo en tu línea real de entrada. Si no se paga solo con las consultas
-                recuperadas, te retiras. Sin hardware, sin contratos, sin riesgo.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
-                <a href="https://calendly.com/baja-dental-ai/pilot" target="_blank" rel="noopener noreferrer" data-i18n="pilot_cta"
-                   class="bg-[#0F0F0F] text-[#FAFAFA] border border-[#FAFAFA] border-opacity-20 font-black text-sm uppercase tracking-widest px-10 py-5 hover:bg-[#FAFAFA] hover:text-[#0F0F0F] transition-colors">
-                    Elige tu Plan
-                </a>
-                <button id="vapi-b2b-trigger"
-                        class="bg-[#00B0FF] text-[#0F0F0F] font-black text-sm uppercase tracking-widest px-8 py-5 hover:bg-[#FAFAFA] transition-colors flex items-center gap-4">
-                    <svg id="b2b-icon-idle" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 15c1.66 0 3-1.34 3-3V6c0-1.66-1.34-3-3-3S9 4.34 9 6v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 15 6.7 12H5c0 3.41 2.72 6.23 6 6.72V21h2v-2.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-                    </svg>
-                    <span id="b2b-icon-connecting" class="connecting-spinner hidden w-5 h-5"></span>
-                    <span id="b2b-icon-active" class="hidden items-end gap-[3px] h-5">
-                        <span class="bar bar-1 h-5"></span>
-                        <span class="bar bar-2 h-5"></span>
-                        <span class="bar bar-3 h-5"></span>
-                        <span class="bar bar-4 h-5"></span>
-                        <span class="bar bar-5 h-5"></span>
-                    </span>
-                    <span id="b2b-btn-label" data-i18n="b2b_btn_idle">Ventas IA</span>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-[#0F0F0F] border-t border-[#FAFAFA] border-opacity-[0.06] px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <span class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
-            Baja Dental AI · bajadentalai.com
-        </span>
-        <div class="flex items-center gap-3">
-            <span data-i18n="footer_compliance" class="text-[#FAFAFA] opacity-15 text-[10px] uppercase tracking-widest">
-                Conforme a la LFPDPPP · Mexicali, B.C.
-            </span>
-            <!-- Staff-only walk-in demo (discreet — customers won't notice this) -->
-            <a href="demo.html" aria-label="Staff demo" title="Walk-in demo (staff only)" translate="no"
-               class="text-[#FAFAFA] opacity-10 hover:opacity-70 text-[10px] leading-none transition-opacity">◆</a>
-        </div>
-    </footer>
-
-    <!-- ============================================================= -->
-    <!-- VAPI WEB SDK + i18n — binds #vapi-demo-trigger                -->
-    <!-- ============================================================= -->
-    <script type="module">
-        import Vapi from "https://esm.sh/@vapi-ai/web";
-
-        /* ---------------- i18n dictionary ---------------- */
-        const I18N = {
-            es: {
-                doc_title: `Baja Dental AI — Recepcionista de Voz para Clínicas Premium`,
-                doc_desc:  `Recepcionista de voz con IA para clínicas dentales de alto volumen. Recepción de pacientes bilingüe 24/7, latencia menor a 800ms, entrega instantánea de leads al CRM.`,
-                nav_features: `Funciones`,
-                nav_ledger:   `Balance`,
-                nav_pilot:    `Iniciar Piloto`,
-                hero_eyebrow: `Recepción con IA de Voz · Clínicas Fronterizas de Mexicali`,
-                hero_h1:      `Cada llamada perdida<br>es un implante de <span class="text-[#00B0FF]">$6,000</span><br>que se va.`,
-                hero_p:       `Las clínicas premium no pierden pacientes con la competencia — los pierden con el buzón de voz. Baja Dental AI contesta cada lead entrante en menos de un segundo, en español e inglés con fluidez, califica al paciente, registra el lead enriquecido en tu CRM y le avisa a tu equipo por mensaje al instante. Cero ingresos perdidos. Cero carga para recepción.`,
-                hero_demo_link: `Demo para recepción en clínica`,
-                stat_1: `De las llamadas entrantes quedan sin contestar en horas pico`,
-                stat_2: `Latencia de respuesta, indistinguible de un humano`,
-                stat_3: `Cobertura sin incapacidades ni huecos de turno`,
-                stat_4: `Leads perdidos entre la llamada y tu CRM`,
-                feat_eyebrow: `Capacidades Clave`,
-                feat_h2:      `Una recepcionista diseñada para nunca perder un lead.`,
-                feat1_title: `Disponibilidad<br>24 / 7 / 365`,
-                feat1_body:  `Contesta a las 2 AM, en días festivos, en plena hora de comida. Sin huecos de turno, sin música de espera, sin «llame en horario de oficina».`,
-                feat2_title: `Spanglish<br>con Fluidez`,
-                feat2_body:  `Español del norte de México e inglés limpio de EE. UU. — alternando a media frase como de verdad hablan tus pacientes de la frontera. Sin menús, sin pedir idioma.`,
-                feat3_title: `Latencia<br>Menor a 800ms`,
-                feat3_body:  `Responde en menos de 800 milisegundos — por debajo del umbral que un paciente puede percibir. Las conversaciones se sienten humanas, no robóticas.`,
-                feat4_title: `Leads al CRM<br>al Instante`,
-                feat4_body:  `Nombre, procedimiento de interés, idioma y ventana de retorno, estructurados y enviados a tu CRM en cuanto termina la llamada. Tu equipo da seguimiento en caliente, no en frío.`,
-                omni_eyebrow: `Ecosistema Omnicanal`,
-                omni_h2:      `El trabajo no termina<br>cuando cuelgas el teléfono.`,
-                omni_w_title: `Alerta Instantánea<br>de Lead por SMS`,
-                omni_w_body:  `En el instante en que la IA cuelga, le envía a tu equipo un mensaje de texto con el lead calificado — nombre, procedimiento, presupuesto, tiempo y cualquier inquietud sobre la frontera — para que llamen de vuelta mientras el paciente sigue decidiendo. La rapidez gana el caso.`,
-                omni_c_title: `Integración Nativa<br>con tu CRM`,
-                omni_c_body:  `No necesitas cambiar tu ecosistema actual. La IA actúa como tu SDR digital, registrando silenciosamente cada lead enriquecido (nombre, procedimiento de interés, presupuesto, urgencia, idioma y un resumen completo de la llamada) en una base de datos segura y consultable que tu equipo usa desde el primer día, lista para exportar a GoHighLevel, HubSpot o Pipedrive.`,
-                led_eyebrow: `El Balance de Fricción`,
-                led_h2:      `Recepción tradicional vs. activación instantánea.`,
-                led_col1: `Punto de Fricción`,
-                led_col2: `Recepción Tradicional`,
-                led_r1_label: `Carga Técnica`,
-                led_r1_trad:  `Hardware PBX, troncales SIP, técnico de TI y capacitación del personal.`,
-                led_r1_ai:    `Cero. Apuntamos tu número actual a la IA. Sin hardware.`,
-                led_r2_label: `Cumplimiento y Audio`,
-                led_r2_trad:  `Guiones de consentimiento manuales; grabaciones guardadas sin orden ni verificación.`,
-                led_r2_ai:    `Consentimiento y captura de audio conforme a la LFPDPPP, configurados desde el inicio.`,
-                led_r3_label: `Tiempo de Implementación`,
-                led_r3_trad:  `Semanas de contratación, capacitación y armado de turnos.`,
-                led_r3_ai:    `En vivo en 48 horas. Implementación instantánea, sin ciclo de reclutamiento.`,
-                led_r4_label: `Retorno de Inversión`,
-                led_r4_trad:  `Sueldo fijo + prestaciones sin importar cuántos leads conviertan.`,
-                led_r4_ai:    `Un solo lead de implante recuperado paga el mes. ROI inmediato.`,
-                pilot_eyebrow: `Implementación en 48 Horas`,
-                pilot_h2:      `Deja de pagarle al buzón<br>por perder a tus pacientes.`,
-                pilot_p:       `Haz un piloto en vivo en tu línea real de entrada. Si no se paga solo con las consultas recuperadas, te retiras. Sin hardware, sin contratos, sin riesgo.`,
-                pilot_cta:       `Elige tu Plan`,
-                pilot_demo_link: `O prueba primero el demo`,
-                footer_compliance: `Conforme a la LFPDPPP · Mexicali, B.C.`,
-                /* dynamic (Vapi button + status) */
-                btn_idle:       `Habla con la Recepcionista`,
-                btn_connecting: `Conectando…`,
-                btn_end:        `Finalizar Llamada`,
-                status_idle:       `En vivo en el navegador · Permite el micrófono para empezar`,
-                status_connecting: `Estableciendo enlace seguro de baja latencia`,
-                status_listening:  `La IA está escuchando · Habla con naturalidad`,
-                status_speaking:   `La IA está hablando…`,
-                status_err_conn:   `Error de conexión · Revisa permisos del micrófono y reintenta`,
-                status_err_mic:    `Acceso al micrófono denegado · Permítelo en la configuración del navegador`,
-                b2b_btn_idle:      `Ventas IA`,
-                pricing_h2:        `Planes y Precios`,
-                pricing_p:         `Selecciona el nivel de automatización que tu clínica necesita.`,
-                pricing_promo_title:`Promo de Junio:`,
-                pricing_promo_body:`Ahorra $199 USD (Setup Gratis) en todos los planes.`,
-                pricing_june_tag:  `Especial de Junio`,
-                pricing_mo:        `/ mes`,
-                pricing_t1_f1:     `800 Minutos de Voz IA`,
-                pricing_t1_f2:     `IA Bilingüe 24/7 (Inglés/Español)`,
-                pricing_t1_f3:     `Alerta SMS instantánea al cerrador`,
-                pricing_t1_promo:  `Promo Junio: Incluye Protección de Asistencia y SMS de Recuperación (gratis de por vida).`,
-                pricing_t2_f1:     `1,200 Minutos de Voz IA`,
-                pricing_t2_f2:     `Protección de Asistencia (SMS recordatorio 24h y 1h antes)`,
-                pricing_t2_f3:     `Campañas de Recuperación (SMS de seguimiento a pacientes no cerrados)`,
-                pricing_t3_f1:     `2,000 Minutos de Voz IA`,
-                pricing_t3_f2:     `Todo lo de Accelerator`,
-                pricing_t3_f3:     `Sincronización Nativa con CRM/EHR (GoHighLevel, OpenDental, etc.)`,
-            },
-            en: {
-                doc_title: `Baja Dental AI — Voice Receptionist for Premium Clinics`,
-                doc_desc:  `Voice AI receptionist for high-volume cosmetic and implant dental clinics. 24/7 bilingual patient intake, sub-800ms latency, instant CRM lead delivery. Zero missed leads.`,
-                nav_features: `Features`,
-                nav_ledger:   `Ledger`,
-                nav_pilot:    `Start Pilot`,
-                hero_eyebrow: `Voice AI Reception · Mexicali Border Clinics`,
-                hero_h1:      `Every missed call<br>is a <span class="text-[#00B0FF]">$6,000</span><br>implant lost.`,
-                hero_p:       `Premium clinics don't lose patients to competitors — they lose them to voicemail. Baja Dental AI answers every inbound lead in under a second, in fluent Spanish and English, qualifies the patient, drops the enriched lead into your CRM, and instantly texts your closer to follow up. Zero missed revenue. Zero front-desk overhead.`,
-                hero_demo_link: `Walk-in clinic staging demo`,
-                stat_1: `Inbound calls go unanswered at peak hours`,
-                stat_2: `Response latency, indistinguishable from human`,
-                stat_3: `Coverage with zero sick days or shift gaps`,
-                stat_4: `Leads dropped between call and your CRM`,
-                feat_eyebrow: `Core Capabilities`,
-                feat_h2:      `A receptionist engineered to never drop a lead.`,
-                feat1_title: `24 / 7 / 365<br>Availability`,
-                feat1_body:  `Answers at 2 AM, on holidays, during lunch rushes. No shift gaps, no hold music, no "please call back during business hours."`,
-                feat2_title: `Fluent<br>Spanglish`,
-                feat2_body:  `Native Northern-Mexico Spanish and clean US English — switching mid-sentence the way your border patients actually speak. No menus, no language prompts.`,
-                feat3_title: `Sub-800ms<br>Latency`,
-                feat3_body:  `Replies land in under 800 milliseconds — below the threshold a caller can perceive. Conversations feel like a person, not a bot.`,
-                feat4_title: `Instant CRM<br>Lead Delivery`,
-                feat4_body:  `Name, procedure interest, language, and callback window structured and pushed to your CRM the moment the call ends. Your team follows up warm, not cold.`,
-                omni_eyebrow: `Omnichannel Ecosystem`,
-                omni_h2:      `The job isn't done<br>when the call ends.`,
-                omni_w_title: `Instant Hot-Lead<br>Text Alert`,
-                omni_w_body:  `The instant the AI hangs up, it texts your closer the qualified lead — name, procedure, budget, timeline, and any border concerns — so your team calls back while the patient is still deciding. Speed-to-lead wins the case.`,
-                omni_c_title: `Native Integration<br>with your CRM`,
-                omni_c_body:  `You don't need to change your tech stack. The AI acts as your digital SDR, silently logging every enriched lead (name, procedure interest, budget, urgency, language, and a full call summary) into a secure, queryable lead database your team works from day one — ready to export to GoHighLevel, HubSpot, or Pipedrive.`,
-                led_eyebrow: `The Friction Ledger`,
-                led_h2:      `Traditional reception vs. instant onboarding.`,
-                led_col1: `Friction Point`,
-                led_col2: `Traditional Reception`,
-                led_r1_label: `Technical Overhead`,
-                led_r1_trad:  `PBX hardware, SIP trunks, IT contractor, and staff training.`,
-                led_r1_ai:    `Zero. We point your existing number at the AI. No hardware.`,
-                led_r2_label: `Compliance & Audio`,
-                led_r2_trad:  `Manual consent scripts; recordings stored ad-hoc and unverified.`,
-                led_r2_ai:    `LFPDPPP-compliant consent and audio capture configured at setup.`,
-                led_r3_label: `Deployment Time`,
-                led_r3_trad:  `Weeks of hiring, onboarding, and scheduling around shifts.`,
-                led_r3_ai:    `Live in 48 hours. Instant deployment, no recruiting cycle.`,
-                led_r4_label: `Return on Investment`,
-                led_r4_trad:  `Fixed salary + benefits regardless of how many leads convert.`,
-                led_r4_ai:    `One recovered implant lead pays for the month. Immediate ROI.`,
-                pilot_eyebrow: `Deploy in 48 Hours`,
-                pilot_h2:      `Stop paying voicemail<br>to lose your patients.`,
-                pilot_p:       `Run a live pilot on your real inbound line. If it doesn't pay for itself in recovered consults, you walk away. No hardware, no contracts, no risk.`,
-                pilot_cta:       `Choose your Plan`,
-                pilot_demo_link: `Or run the staging demo first`,
-                footer_compliance: `LFPDPPP Compliant · Mexicali, B.C.`,
-                /* dynamic (Vapi button + status) */
-                btn_idle:       `Talk to the Receptionist`,
-                btn_connecting: `Connecting…`,
-                btn_end:        `End Call`,
-                status_idle:       `Live in-browser · Allow microphone to begin`,
-                status_connecting: `Establishing secure low-latency link`,
-                status_listening:  `AI is listening · Speak naturally`,
-                status_speaking:   `AI is speaking…`,
-                status_err_conn:   `Connection error · Check mic permissions and retry`,
-                status_err_mic:    `Microphone access denied · Allow mic in browser settings`,
-                b2b_btn_idle:      `Sales AI`,
-                pricing_h2:        `Plans & Pricing`,
-                pricing_p:         `Select the level of automation your clinic needs.`,
-                pricing_promo_title:`June Promo:`,
-                pricing_promo_body:`Save $199 USD (Free Setup) on all plans.`,
-                pricing_june_tag:  `June Special`,
-                pricing_mo:        `/ mo`,
-                pricing_t1_f1:     `800 AI Voice Minutes`,
-                pricing_t1_f2:     `24/7 Bilingual AI (English/Spanish)`,
-                pricing_t1_f3:     `Instant SMS alert to closer`,
-                pricing_t1_promo:  `June Promo: Includes Show-Up Protection and Win-Back SMS (free for life).`,
-                pricing_t2_f1:     `1,200 AI Voice Minutes`,
-                pricing_t2_f2:     `Show-Up Protection (24h & 1h reminder SMS)`,
-                pricing_t2_f3:     `Win-Back Campaigns (Follow-up SMS to unconverted patients)`,
-                pricing_t3_f1:     `2,000 AI Voice Minutes`,
-                pricing_t3_f2:     `Everything in Accelerator`,
-                pricing_t3_f3:     `Native CRM/EHR Sync (GoHighLevel, OpenDental, etc.)`,
-            }
-        };
-
-        const SUPPORTED = ['es', 'en'];
-        let currentLang = localStorage.getItem('bd_lang');
-        if (!SUPPORTED.includes(currentLang)) currentLang = 'es'; // default Spanish
-        let lastState = 'idle';
-
-        const t = (k) => (I18N[currentLang] && I18N[currentLang][k]) || I18N.en[k] || '';
-
-        function applyStatic(lang) {
-            document.documentElement.lang = lang;
-            document.title = t('doc_title');
-            const md = document.querySelector('meta[name="description"]');
-            if (md) md.setAttribute('content', t('doc_desc'));
-
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const v = t(el.getAttribute('data-i18n'));
-                if (v) el.textContent = v;
-            });
-            document.querySelectorAll('[data-i18n-html]').forEach(el => {
-                const v = t(el.getAttribute('data-i18n-html'));
-                if (v) el.innerHTML = v;
-            });
-
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                const active = btn.getAttribute('data-lang') === lang;
-                btn.classList.toggle('bg-[#00B0FF]', active);
-                btn.classList.toggle('text-[#0F0F0F]', active);
-                btn.classList.toggle('text-[#FAFAFA]', !active);
-                btn.classList.toggle('opacity-40', !active);
-                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-            });
-        }
-
-        function setLang(lang) {
-            if (!SUPPORTED.includes(lang)) return;
-            currentLang = lang;
-            localStorage.setItem('bd_lang', lang);
-            applyStatic(lang);
-            setState(lastState); // re-render dynamic button/status in new language
-        }
-
-        /* ---------------- Vapi ---------------- */
-        const VAPI_PUBLIC_KEY   = "43d6c707-ebbc-4760-a931-6501689b573d";
-        const VAPI_ASSISTANT_ID = "01ff55d9-1977-4987-abcc-8ee8d4c2690f";
-        const VAPI_B2B_ASSISTANT_ID = "YOUR_B2B_ASSISTANT_ID_HERE";
-
-        let vapiInstance = null;
-        let isCallActive = false;
-        let currentTarget = null; // 'demo' or 'b2b'
-
-        const trigger    = document.getElementById('vapi-demo-trigger');
-        const label      = document.getElementById('hero-btn-label');
-        const iconIdle   = document.getElementById('hero-icon-idle');
-        const iconConn   = document.getElementById('hero-icon-connecting');
-        const iconActive = document.getElementById('hero-icon-active');
-        const status     = document.getElementById('hero-status');
-
-        const triggerB2B    = document.getElementById('vapi-b2b-trigger');
-        const labelB2B      = document.getElementById('b2b-btn-label');
-        const iconIdleB2B   = document.getElementById('b2b-icon-idle');
-        const iconConnB2B   = document.getElementById('b2b-icon-connecting');
-        const iconActiveB2B = document.getElementById('b2b-icon-active');
-
-        // Expose t() for setState
-        window.t = t;
-
-        function setState(state) {
-            lastState = state;
-            
-            // Reset both buttons
-            if(trigger) {
-                iconIdle.classList.remove('hidden');
-                iconConn.classList.add('hidden');
-                iconActive.classList.remove('flex');
-                iconActive.classList.add('hidden');
-                trigger.classList.remove('ring-idle', 'ring-active');
-                trigger.style.backgroundColor = '';
-                label.textContent = t('btn_idle');
-            }
-            if(triggerB2B) {
-                iconIdleB2B.classList.remove('hidden');
-                iconConnB2B.classList.add('hidden');
-                iconActiveB2B.classList.remove('flex');
-                iconActiveB2B.classList.add('hidden');
-                triggerB2B.classList.remove('ring-idle', 'ring-active');
-                triggerB2B.style.backgroundColor = '';
-                labelB2B.textContent = t('b2b_btn_idle');
-            }
-            if(status) status.textContent = t('status_idle');
-
-            if (!currentTarget || state === 'idle') {
-                isCallActive = false;
-                currentTarget = null;
-                if(trigger) trigger.classList.add('ring-idle');
-                if(triggerB2B) triggerB2B.classList.add('ring-idle');
-                return;
-            }
-
-            const activeBtn = currentTarget === 'demo' ? trigger : triggerB2B;
-            const activeIconIdle = currentTarget === 'demo' ? iconIdle : iconIdleB2B;
-            const activeIconConn = currentTarget === 'demo' ? iconConn : iconConnB2B;
-            const activeIconActive = currentTarget === 'demo' ? iconActive : iconActiveB2B;
-            const activeLabel = currentTarget === 'demo' ? label : labelB2B;
-
-            activeIconIdle.classList.add('hidden');
-
-            if (state === 'connecting') {
-                activeIconConn.classList.remove('hidden');
-                activeLabel.textContent = t('btn_connecting');
-                if(status) status.textContent = t('status_connecting');
-            } else if (state === 'active' || state === 'speaking') {
-                activeIconActive.classList.remove('hidden');
-                activeIconActive.classList.add('flex');
-                activeBtn.classList.add('ring-active');
-                activeBtn.style.backgroundColor = '#ef4444';
-                activeLabel.textContent = t('btn_end');
-                if(status) status.textContent = state === 'active' ? t('status_listening') : t('status_speaking');
-                isCallActive = true;
-            }
-        }
-
-        async function startCall(target) {
-            currentTarget = target;
-            try {
-                if (!vapiInstance) {
-                    vapiInstance = new Vapi(VAPI_PUBLIC_KEY);
-                    vapiInstance.on('call-start',   () => setState('active'));
-                    vapiInstance.on('call-end',     () => setState('idle'));
-                    vapiInstance.on('speech-start', () => setState('speaking'));
-                    vapiInstance.on('speech-end',   () => setState('active'));
-                    vapiInstance.on('error', (e) => {
-                        console.error('[Vapi]', e);
-                        setState('idle');
-                        if(status) status.textContent = t('status_err_conn');
-                    });
-                }
-                setState('connecting');
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                
-                const astId = target === 'demo' ? VAPI_ASSISTANT_ID : VAPI_B2B_ASSISTANT_ID;
-                const src = target === 'demo' ? 'homepage_hero' : 'b2b_sales';
-                const camp = target === 'demo' ? null : 'b2b_agency';
-                
-                await vapiInstance.start(astId, { 
-                    metadata: { source: src, campaign_type: camp } 
-                });
-            } catch (err) {
-                console.error('[Mic/Setup]', err);
-                setState('idle');
-                if(status) status.textContent = t('status_err_mic');
-            }
-        }
-
-        /* ---------------- wire up ---------------- */
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', () => setLang(btn.getAttribute('data-lang')));
-        });
-
-        if(trigger) {
-            trigger.addEventListener('click', () => {
-                if (isCallActive && currentTarget === 'demo') {
-                    vapiInstance.stop();
-                    setState('idle');
-                } else if (!isCallActive) {
-                    startCall('demo');
-                }
-            });
-        }
-
-        if(triggerB2B) {
-            triggerB2B.addEventListener('click', () => {
-                if (isCallActive && currentTarget === 'b2b') {
-                    vapiInstance.stop();
-                    setState('idle');
-                } else if (!isCallActive) {
-                    if (VAPI_B2B_ASSISTANT_ID === 'YOUR_B2B_ASSISTANT_ID_HERE') {
-                        alert('Por favor configura el VAPI_B2B_ASSISTANT_ID en el código para activar este botón.');
-                        return;
-                    }
-                    startCall('b2b');
-                }
-            });
-        }
-
-        /* ---------------- parallax hero ---------------- */
-        const heroParallax = document.getElementById('hero-parallax');
-        if (heroParallax && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            let ticking = false;
-            const onScroll = () => {
-                heroParallax.style.transform = `translate3d(0, ${(window.scrollY || 0) * 0.4}px, 0)`;
-                ticking = false;
-            };
-            window.addEventListener('scroll', () => {
-                if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
-            }, { passive: true });
-            onScroll();
-        }
-
-        // init
-        applyStatic(currentLang);
-        setState('idle');
-    </script>
+      </div>
+    </div>
+    <div class="container" style="text-align: center; margin-top: 40px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-hairline); padding-top: 24px;">
+      &copy; 2026 Baja Dental AI. Todos los derechos reservados.
+    </div>
+  </footer>
+  
+  <script>
+    // I18N Dictionary for index.html
+    const I18N = {
+      es: {
+        promo_banner: 'Consultorios fundadores de Mexicali: hasta 75% de descuento en tu sitio web. Pide tu código →',
+        nav_solution: 'Solución',
+        nav_ai: 'Recepcionista IA',
+        nav_pricing: 'Paquetes',
+        nav_about: 'Nosotros',
+        nav_demo: 'Agenda una demo',
+        hero_h1: 'Saca tu consultorio de Facebook y ponlo a trabajar 24/7.',
+        hero_sub: 'Sitio web profesional + recepcionista con IA que agenda pacientes mientras duermes. Hecho para dentistas de Mexicali.',
+        hero_cta1: 'Reclama tu código de fundador',
+        hero_cta2: 'Ver paquetes',
+        trust_1: 'Hecho para Mexicali',
+        trust_2: 'Bilingüe Español/Inglés',
+        trust_3: 'Listo para pacientes de EE.UU.',
+        trust_4: 'Sin dominio propio requerido',
+        problem_h2: '¿Tu consultorio vive en una página de Facebook?',
+        pain_1: 'Los pacientes te buscan en Google y no te encuentran.',
+        pain_2: 'Los mensajes se quedan sin responder y pierdes citas.',
+        pain_3: 'Una página social no proyecta el profesionalismo de tu trabajo.',
+        pain_4: 'Tu competencia ya tiene sitio propio.',
+        solution_h2: 'Tu presencia digital, lista en días — no en meses.',
+        step1_title: 'Construimos tu sitio',
+        step1_desc: 'Diseño premium, responsivo, listo para pacientes.',
+        step2_title: 'Activamos tu recepcionista',
+        step2_desc: 'Responde, agenda y filtra 24/7, en español e inglés.',
+        step3_title: 'Atraemos pacientes',
+        step3_desc: 'SEO local, WhatsApp y redes que llenan tu agenda.',
+        ai_spotlight_h2: 'Nunca pierdas otra llamada ni mensaje.',
+        ai_spotlight_desc: 'Tu recepcionista con IA contesta 24/7 en español e inglés, agenda citas, responde preguntas frecuentes y captura pacientes de EE.UU. fuera de horario — para que tú te dediques a la odontología.',
+        ai_spotlight_cta: 'Conoce la Recepcionista IA',
+        ft_web: 'Sitios Web',
+        ft_ai: 'Recepcionista IA',
+        ft_about: 'Nosotros',
+        ft_contact: 'Contacto',
+        ft_privacy: 'Aviso de Privacidad'
+      },
+      en: {
+        promo_banner: 'Mexicali Founding Practices: get up to 75% off your website. Request your code →',
+        nav_solution: 'Solution',
+        nav_ai: 'AI Receptionist',
+        nav_pricing: 'Pricing',
+        nav_about: 'About',
+        nav_demo: 'Book a demo',
+        hero_h1: 'Get your practice off Facebook and working 24/7.',
+        hero_sub: 'Professional website + AI receptionist that books patients while you sleep. Built for Mexicali dentists.',
+        hero_cta1: 'Claim your founder code',
+        hero_cta2: 'See packages',
+        trust_1: 'Built for Mexicali',
+        trust_2: 'Bilingual ES/EN',
+        trust_3: 'Ready for US patients',
+        trust_4: 'No domain needed',
+        problem_h2: 'Is your practice living on a Facebook page?',
+        pain_1: 'Patients search Google and can\'t find you.',
+        pain_2: 'Messages go unanswered, you lose appointments.',
+        pain_3: 'A social page doesn\'t reflect how professional your work is.',
+        pain_4: 'Your competition already has a real website.',
+        solution_h2: 'Your digital presence, ready in days.',
+        step1_title: 'We build your site',
+        step1_desc: 'Premium design, responsive, patient-ready.',
+        step2_title: 'We turn on your AI receptionist',
+        step2_desc: 'Answers, books, and filters 24/7, in English and Spanish.',
+        step3_title: 'We bring patients',
+        step3_desc: 'Local SEO, WhatsApp, and social media management.',
+        ai_spotlight_h2: 'Never miss another call or message.',
+        ai_spotlight_desc: 'Your AI receptionist answers 24/7 in English and Spanish, books appointments, answers FAQs, and captures US patients after hours — so you can focus on dentistry.',
+        ai_spotlight_cta: 'Meet the AI Receptionist',
+        ft_web: 'Websites',
+        ft_ai: 'AI Receptionist',
+        ft_about: 'About',
+        ft_contact: 'Contact',
+        ft_privacy: 'Privacy Policy'
+      }
+    };
+  </script>
 </body>
 </html>

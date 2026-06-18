@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baja Dental AI — Contacto y Demo</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="images/bajadentalai_favicon.png" alt="Baja Dental AI Logo">
+        <span class="logo-text">Baja Dental AI</span>
+      </a>
+      
+      <button class="menu-toggle" aria-label="Menu">&#9776;</button>
+
+      <div class="nav-links">
+        <a href="index.html#solution" class="nav-link" data-i18n="nav_solution">Solución</a>
+        <a href="recepcionista-ia.html" class="nav-link" data-i18n="nav_ai">Recepcionista IA</a>
+        <a href="paquetes.html" class="nav-link" data-i18n="nav_pricing">Paquetes</a>
+        <a href="nosotros.html" class="nav-link" data-i18n="nav_about">Nosotros</a>
+        
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <a href="contacto.html" class="btn btn-primary" data-i18n="nav_demo" style="box-shadow: 0 0 15px rgba(43,212,232,0.5);">Agenda una demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: calc(var(--nav-height) + 40px); padding-bottom: 80px;">
+    <div class="container grid grid-cols-2">
+      <!-- Info Left -->
+      <div class="fade-in-up" style="padding-right: 40px;">
+        <h1 data-i18n="contact_title" style="margin-bottom: 24px;">Transforma tu consultorio hoy.</h1>
+        <p data-i18n="contact_sub" style="color: var(--text-muted); font-size: 18px; margin-bottom: 40px;">Agenda una demo en vivo, conoce nuestros paquetes o reclama tu código de fundador para obtener descuentos exclusivos en tu build.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <div class="glass-panel" style="padding: 24px; display: flex; align-items: center; gap: 16px;">
+            <div style="color: var(--primary-cyan); font-size: 32px;">📱</div>
+            <div>
+              <h4 style="margin-bottom: 4px;" data-i18n="c_whatsapp">WhatsApp Directo</h4>
+              <a href="https://wa.me/521234567890" target="_blank" style="font-weight: 600; font-size: 18px;">+52 (686) 123 4567</a>
+            </div>
+          </div>
+          
+          <div class="glass-panel" style="padding: 24px; display: flex; align-items: center; gap: 16px;">
+            <div style="color: var(--primary-cyan); font-size: 32px;">✉️</div>
+            <div>
+              <h4 style="margin-bottom: 4px;" data-i18n="c_email">Correo Electrónico</h4>
+              <a href="mailto:hola@bajadentalai.com" style="font-weight: 600; font-size: 18px;">hola@bajadentalai.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Right -->
+      <div class="glass-panel fade-in-up" style="animation-delay: 0.2s;">
+        <h3 data-i18n="form_title" style="margin-bottom: 24px; text-align: center; color: var(--primary-cyan);">Solicita Información</h3>
+        
+        <form id="contactForm" onsubmit="event.preventDefault(); showConfirmation();">
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_name">Nombre Completo</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_clinic">Nombre de Consultorio</label>
+            <input type="text" class="form-control" required>
+          </div>
+          <div class="grid grid-cols-2" style="gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" data-i18n="lbl_wa">WhatsApp</label>
+              <input type="tel" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="lbl_email">Email</label>
+              <input type="email" class="form-control" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="lbl_plan">Plan de Interés</label>
+            <select class="form-control">
+              <option value="none" data-i18n="opt_none">Selecciona una opción...</option>
+              <option value="web" data-i18n="opt_web">Paquetes de Sitio Web</option>
+              <option value="ai" data-i18n="opt_ai">Recepcionista IA</option>
+              <option value="both" data-i18n="opt_both">Ambos / Clínica Inteligente</option>
+            </select>
+          </div>
+
+          
+          <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 24px;">
+            <input type="checkbox" id="privacyCheck" required style="margin-top: 4px;">
+            <label for="privacyCheck" style="font-size: 12px; color: var(--text-muted);" data-i18n-html="lbl_privacy">
+              He leído y acepto el <a href="aviso-de-privacidad.html" style="text-decoration: underline;">Aviso de Privacidad</a> (conforme a la LFPDPPP).
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="btn_submit">Enviar Solicitud</button>
+        </form>
+
+        <div id="confirmationMsg" style="display: none; text-align: center; padding: 40px 20px;">
+          <div style="font-size: 48px; color: var(--primary-cyan); margin-bottom: 16px;">✓</div>
+          <h3 data-i18n="msg_success_title">¡Mensaje enviado!</h3>
+          <p data-i18n="msg_success_desc" style="color: var(--text-muted);">Nos pondremos en contacto contigo por WhatsApp en breve para agendar tu demo.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="section section-deep" style="border-top: 1px solid var(--border-hairline); padding-bottom: 40px;">
+    <!-- Same footer structure... -->
+    <div class="container" style="text-align: center; font-size: 12px; color: var(--text-muted);">
+      &copy; 2026 Baja Dental AI. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script>
+    function checkPromoCode() {
+      const input = document.getElementById('promoInput').value.toLowerCase();
+      const msg = document.getElementById('promoMsg');
+      // Simple logic for UI simulation
+      if (input.length > 3) {
+        msg.style.display = 'block';
+      } else {
+        msg.style.display = 'none';
+      }
+    }
+
+    function showConfirmation() {
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('confirmationMsg').style.display = 'block';
+    }
+
+    window.I18N = window.I18N || {};
+    window.I18N.es = Object.assign(window.I18N.es || {}, {
+      promo_banner: 'Consultorios fundadores de Mexicali: hasta 75% de descuento en tu sitio web. Pide tu código →',
+      contact_title: 'Transforma tu consultorio hoy.',
+      contact_sub: 'Agenda una demo en vivo, conoce nuestros paquetes o reclama tu código de fundador para obtener descuentos exclusivos en tu build.',
+      c_whatsapp: 'WhatsApp Directo',
+      c_email: 'Correo Electrónico',
+      form_title: 'Solicita Información',
+      lbl_name: 'Nombre Completo',
+      lbl_clinic: 'Nombre de Consultorio',
+      lbl_wa: 'WhatsApp',
+      lbl_email: 'Email',
+      lbl_plan: 'Plan de Interés',
+      opt_none: 'Selecciona una opción...',
+      opt_web: 'Paquetes de Sitio Web',
+      opt_ai: 'Recepcionista IA',
+      opt_both: 'Ambos / Clínica Inteligente',
+      lbl_promo: 'Código de Promoción',
+      msg_promo_valid: '¡Código válido! Hasta 75% aplicado en tu paquete de sitio web.',
+      lbl_privacy: 'He leído y acepto el <a href="aviso-de-privacidad.html" style="text-decoration: underline;">Aviso de Privacidad</a> (conforme a la LFPDPPP).',
+      btn_submit: 'Enviar Solicitud',
+      msg_success_title: '¡Mensaje enviado!',
+      msg_success_desc: 'Nos pondremos en contacto contigo por WhatsApp en breve para agendar tu demo.',
+      nav_solution: 'Solución',
+      nav_ai: 'Recepcionista IA',
+      nav_pricing: 'Paquetes',
+      nav_about: 'Nosotros',
+      nav_demo: 'Agenda una demo'
+    });
+    window.I18N.en = Object.assign(window.I18N.en || {}, {
+      promo_banner: 'Mexicali Founding Practices: get up to 75% off your website. Request your code →',
+      contact_title: 'Transform your practice today.',
+      contact_sub: 'Book a live demo, explore our packages, or claim your founder code for exclusive discounts on your build.',
+      c_whatsapp: 'Direct WhatsApp',
+      c_email: 'Email Address',
+      form_title: 'Request Information',
+      lbl_name: 'Full Name',
+      lbl_clinic: 'Clinic Name',
+      lbl_wa: 'WhatsApp',
+      lbl_email: 'Email',
+      lbl_plan: 'Plan of Interest',
+      opt_none: 'Select an option...',
+      opt_web: 'Website Packages',
+      opt_ai: 'AI Receptionist',
+      opt_both: 'Both / Smart Clinic',
+      lbl_promo: 'Promo Code',
+      msg_promo_valid: 'Valid code! Up to 75% applied to your website package.',
+      lbl_privacy: 'I have read and accept the <a href="aviso-de-privacidad.html" style="text-decoration: underline;">Privacy Policy</a> (LFPDPPP compliant).',
+      btn_submit: 'Send Request',
+      msg_success_title: 'Message sent!',
+      msg_success_desc: 'We will contact you via WhatsApp shortly to schedule your demo.',
+      nav_solution: 'Solution',
+      nav_ai: 'AI Receptionist',
+      nav_pricing: 'Pricing',
+      nav_about: 'About',
+      nav_demo: 'Book a demo'
+    });
+  </script>
+</body>
+</html>

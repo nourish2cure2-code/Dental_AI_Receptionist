@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baja Dental AI — Aviso de Privacidad</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <img src="images/bajadentalai_favicon.png" alt="Baja Dental AI Logo">
+        <span class="logo-text">Baja Dental AI</span>
+      </a>
+      
+      <button class="menu-toggle" aria-label="Menu">&#9776;</button>
+
+      <div class="nav-links">
+        <a href="index.html#solution" class="nav-link" data-i18n="nav_solution">Solución</a>
+        <a href="recepcionista-ia.html" class="nav-link" data-i18n="nav_ai">Recepcionista IA</a>
+        <a href="paquetes.html" class="nav-link" data-i18n="nav_pricing">Paquetes</a>
+        <a href="nosotros.html" class="nav-link" data-i18n="nav_about">Nosotros</a>
+        
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="es">ES</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+
+        <a href="contacto.html" class="btn btn-primary" data-i18n="nav_demo">Agenda una demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: calc(var(--nav-height) + 40px); padding-bottom: 80px;">
+    <div class="container">
+      <div class="glass-panel fade-in-up" style="max-width: 800px; margin: 0 auto; padding: 40px;">
+        <h1 data-i18n="privacy_title" style="margin-bottom: 32px; font-size: 32px;">Aviso de Privacidad</h1>
+        
+        <div style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+          <p><strong>Fecha de última actualización: Junio 2026</strong></p>
+          
+          <p>En cumplimiento con lo establecido por la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), <strong>Baja Dental AI</strong> con domicilio en Mexicali, Baja California, es responsable de recabar sus datos personales, del uso que se le dé a los mismos y de su protección.</p>
+          
+          <h3 style="margin-top: 24px; font-size: 18px; color: var(--primary-cyan);">I. Datos personales que recabamos</h3>
+          <p>Para llevar a cabo las finalidades descritas en el presente aviso de privacidad, utilizaremos los siguientes datos personales:</p>
+          <ul style="margin-left: 20px; margin-bottom: 16px;">
+            <li>Nombre completo</li>
+            <li>Nombre de la clínica o consultorio dental</li>
+            <li>Teléfono (WhatsApp)</li>
+            <li>Correo electrónico</li>
+          </ul>
+
+          <h3 style="margin-top: 24px; font-size: 18px; color: var(--primary-cyan);">II. Finalidades del tratamiento de datos</h3>
+          <p>Sus datos personales serán utilizados para las siguientes finalidades principales:</p>
+          <ul style="margin-left: 20px; margin-bottom: 16px;">
+            <li>Proveer los servicios y productos que ha solicitado (Diseño Web y Recepcionista IA).</li>
+            <li>Contactarlo para agendar demostraciones o resolver dudas.</li>
+            <li>Informar sobre cambios o nuevos servicios relacionados.</li>
+            <li>Evaluar la calidad del servicio que le brindamos.</li>
+          </ul>
+
+          <h3 style="margin-top: 24px; font-size: 18px; color: var(--primary-cyan);">III. Consentimiento en llamadas y grabaciones</h3>
+          <p>En el caso del producto "Recepcionista de Voz IA", le informamos que el sistema está configurado para advertir a los pacientes que "Para fines de calidad, esta llamada es grabada". El tratamiento de estos datos es responsabilidad compartida entre la Clínica Dental contratante y Baja Dental AI como encargado del procesamiento técnico.</p>
+
+          <h3 style="margin-top: 24px; font-size: 18px; color: var(--primary-cyan);">IV. Derechos ARCO</h3>
+          <p>Usted tiene derecho a conocer qué datos personales tenemos de usted (Acceso), solicitar la corrección de su información (Rectificación), que la eliminemos de nuestros registros (Cancelación), o bien, oponerse al uso de sus datos para fines específicos (Oposición). Para el ejercicio de cualquiera de los derechos ARCO, usted deberá presentar la solicitud respectiva enviando un correo electrónico a <strong>hola@bajadentalai.com</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="section section-deep" style="border-top: 1px solid var(--border-hairline); padding-bottom: 40px;">
+    <!-- Same footer structure... -->
+    <div class="container" style="text-align: center; font-size: 12px; color: var(--text-muted);">
+      &copy; 2026 Baja Dental AI. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script>
+    window.I18N = window.I18N || {};
+    window.I18N.es = Object.assign(window.I18N.es || {}, {
+      nav_solution: 'Solución',
+      nav_ai: 'Recepcionista IA',
+      nav_pricing: 'Paquetes',
+      nav_about: 'Nosotros',
+      nav_demo: 'Agenda una demo',
+      privacy_title: 'Aviso de Privacidad'
+    });
+    window.I18N.en = Object.assign(window.I18N.en || {}, {
+      nav_solution: 'Solution',
+      nav_ai: 'AI Receptionist',
+      nav_pricing: 'Pricing',
+      nav_about: 'About',
+      nav_demo: 'Book a demo',
+      privacy_title: 'Privacy Policy'
+    });
+  </script>
+</body>
+</html>
